@@ -16,6 +16,7 @@ public class Player {
     private int agility;
     public final int MAX_STATS_LEVEL = 10;
     private boolean alive;
+    private Weapon equippedWeapon;
 
     public Player(String name) {
         this.name = name;
@@ -28,6 +29,7 @@ public class Player {
         strength = 1;
         agility = 1;
         alive = true;
+        equippedWeapon = new Weapon("fists", 1);
     }
 
     public String getName() {
@@ -36,6 +38,46 @@ public class Player {
 
     public ArrayList<Item> getInventory() {
         return inventory;
+    }
+
+    public void addToInventory(Item item) {
+        if(item != null) {
+            inventory.add(item);
+        }
+    }
+
+    public int indexOfItem(String searchItem) {
+        for(int i = 0; i < inventory.size(); i++) {
+            if(inventory.get(i).getName().toLowerCase().equals(searchItem.toLowerCase())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public Item getItemAtIndex(int index) {
+        if(index >= inventory.size() || index < 0) {
+            return null;
+        }
+        else{
+            return inventory.get(index);
+        }
+    }
+
+    public void printInventory() {
+        String s = "Inventory: [";
+        if(inventory.size() >= 1) {
+            s += inventory.get(0);
+        }
+        else{
+            System.out.println("Inventory: Empty");
+            return;
+        }
+        for(int i = 1; i < inventory.size(); i++) {
+            s += ", " + inventory.get(i).getName();
+        }
+        s += "]";
+        System.out.println(s);
     }
 
     public int getHealth() {
@@ -119,5 +161,22 @@ public class Player {
         else if(c.getType().equals("drink")) {
             decreaseThirst(c.getEffectiveness());
         }
+    }
+
+    public void consumeItem(int i) {
+        if(i >= inventory.size() || i < 0) {//check for valid index
+            return;
+        }
+
+        if(inventory.get(i) instanceof Consumable) {
+            consumeItem((Consumable)inventory.get(i));
+            inventory.remove(i);
+        }
+    }
+
+    public void accessInventory() {
+        printInventory();
+        System.out.println("Type the index of the item you want to access, or \"quit\" to exit out of your inventory");
+
     }
 }

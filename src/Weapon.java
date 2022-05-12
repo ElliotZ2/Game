@@ -1,16 +1,17 @@
 public class Weapon extends Item{
-    private int durability;
     private int damage;
-    //figure out how to store a list of all existing items, maybe in another file
+    private static Weapon[] allWeapons =
+            {new Weapon("toothpick", 1),
+            new Weapon("bat", 5),
+            new Weapon("shovel", 7)};
 
-    public Weapon (String name, int damage, int durability) {
+    public Weapon (String name, int damage) {
         super(name);
         this.damage = damage;
-        this.durability = durability;
     }
 
-    public int getDurability() {
-        return durability;
+    public static Weapon generateRandomWeapon() {
+        return allWeapons[(int) (Math.random() * allWeapons.length)];
     }
 
     public int getDamage() {
