@@ -12,8 +12,8 @@ public class Player {
     public final int DEHYDRATION_LIMIT = 100;
     private int infectionLevel;
     public final int INFECTION_LIMIt = 100;
-    private int strength;
-    private int agility;
+    private final int BASE_DAMAGE = 15;
+    private final double DAMAGE_RANGE = 0.25;
     public final int MAX_STATS_LEVEL = 10;
     private boolean alive;
     private Weapon equippedWeapon;
@@ -26,10 +26,21 @@ public class Player {
         hunger = 0;
         thirst = 0;
         infectionLevel = 0;
-        strength = 1;
-        agility = 1;
         alive = true;
         equippedWeapon = new Weapon("fists", 1);
+    }
+
+    //constructor for testing purposes only
+    public Player(String name, int hp, Weapon weapon) {
+        this.name = name;
+        inventory = new ArrayList<Item>();
+        inventorySlots = 6;
+        health = hp;
+        hunger = 0;
+        thirst = 0;
+        infectionLevel = 0;
+        alive = true;
+        equippedWeapon = weapon;
     }
 
     public String getName() {
@@ -95,6 +106,18 @@ public class Player {
         health -= damage;
     }
 
+    public int attack() {
+        int damage = BASE_DAMAGE + equippedWeapon.getDamage();
+        double random = Math.random() * DAMAGE_RANGE;
+        if((int) Math.random() == 0) {
+            damage += damage * random;
+        }
+        else{
+            damage -= damage * random;
+        }
+        return (int) damage;
+    }
+
     public int getHunger() {
         return hunger;
     }
@@ -133,14 +156,6 @@ public class Player {
 
     public int getInfectionLevel() {
         return infectionLevel;
-    }
-
-    public int getStrength() {
-        return strength;
-    }
-
-    public int getAgility() {
-        return agility;
     }
 
     public boolean isAlive() {

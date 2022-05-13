@@ -1,6 +1,11 @@
 import java.util.Scanner;
 
 public class Event {
+    private static final int SLEEP_TIME = 0;//for future thread.sleep so that i can test fast by changing SLEEP_TIME to 0
+    private static final int THIRST_INCREASE = 5;
+    private static final int HUNGER_INCREASE = 5;
+
+
     public static void testEvent(Player player) {
         player.increaseHunger(40);
         Item item = new Consumable("chicken", "food", 35);
@@ -12,6 +17,11 @@ public class Event {
         System.out.println(player.getHunger());
         player.printInventory();
 
+    }
+
+    public static void decrementPlayerStats(Player player) {
+        player.increaseHunger(HUNGER_INCREASE);
+        player.increaseThirst(THIRST_INCREASE);
     }
 
     public static void day(Player player) {
@@ -47,7 +57,7 @@ public class Event {
     }
 
     public static void scavenge(Player player) {
-        if(Math.random() > 0.99) {
+        if(Math.random() > 0.75) {
             System.out.println("You went looking for loot, but ended up getting ambushed!");
             fight(player);
             return;
@@ -55,12 +65,29 @@ public class Event {
 
         //randomize to figure out what item will be generated ex: 0.3 and below for a weapon, between 0.3 and 0.5 for food
         double random = Math.random();
-        Weapon w = Weapon.generateRandomWeapon();
-        System.out.println("You were able to find a " + w.getName());
-        player.addToInventory(w);
+        if(random < 0.25) {//found a weapon
+            Weapon w = Weapon.generateRandomLowTierWeapon();
+            System.out.println("You were able to find a " + w.getName());
+            player.addToInventory(w);
+        }
+        else if(random < 0.5) {//found some food
+            Consumable c = Consumable.generateRandomFood();
+            System.out.println("You were able to find a" + c.getName());
+            player.addToInventory(c);
+        }
+        else if(random < 0.75) {//found some drink
+            Consumable c = Consumable.generateRandomDrink();
+            System.out.println("You were able to find a" + c.getName());
+            player.addToInventory(c);
+        }
+        else{//found some healing
+            Consumable c = Consumable.generateRandomHealing();
+            System.out.println("You were able to find a" + c.getName());
+            player.addToInventory(c);
+        }
     }
 
     public static void fight(Player player) {
-
+        //create enemy class?
     }
 }
