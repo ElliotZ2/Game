@@ -104,6 +104,9 @@ public class Player {
 
     public void takeDamage(int damage) {
         health -= damage;
+        if(health < 0) {
+            health = 0;
+        }
     }
 
     public int attack() {
@@ -176,6 +179,10 @@ public class Player {
         else if(c.getType().equals("drink")) {
             decreaseThirst(c.getEffectiveness());
         }
+    }
+
+    public Weapon getEquippedWeapon() {
+        return equippedWeapon;
     }
 
     public void consumeItem(int i) {

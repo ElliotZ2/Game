@@ -26,6 +26,17 @@ public class Consumable extends Item{
         return effectiveness;
     }
 
+    public static Consumable generateRandomConsumable() {
+        double random = Math.random();
+        if(random < 0.3333) {
+            return generateRandomDrink();
+        }
+        if(random < 0.6666) {
+            return generateRandomFood();
+        }
+        return generateRandomHealing();
+    }
+
     public static Consumable generateRandomFood() {
         return allFoods[(int) (Math.random() * allFoods.length)];
     }

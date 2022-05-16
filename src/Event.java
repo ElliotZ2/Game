@@ -90,4 +90,41 @@ public class Event {
     public static void fight(Player player) {
         //create enemy class?
     }
+
+    public static void battle(Player player, Enemy enemy) {
+        int r = 0;
+        while(player.isAlive() == true && player.getHealth() > 0 && enemy.getHealth() > 0) {
+            if(r % 2 == 0) {
+                int damage = player.attack();
+                enemy.takeDamage(damage);
+                System.out.println(player.getName() + " attacked the " + enemy.getName() + " for " + damage + " damage " + " with their " + player.getEquippedWeapon().getName() + ".");
+                System.out.println("The " + enemy.getName() + " now has " + enemy.getHealth() + " health.");
+                System.out.println();
+            }
+            else{
+                int damage = enemy.attack();
+                if(damage == 0) {
+                    System.out.println("The " + enemy.getName() + "\'s attack missed.");
+                }
+                else{
+                    player.takeDamage(damage);
+                    System.out.println("The " + enemy.getName() + " attacked " + player.getName() + " for " + damage + " damage.");
+                    System.out.println(player.getName() + " now has " + player.getHealth() + " health.");
+                    /*
+                    for adding the infection thing later
+                    if(enemy.getName().contains("zombie")) {
+                        infect the player
+                    }*/
+                }
+                System.out.println();
+            }
+            r++;
+        }
+        if(player.getHealth() > 0) {
+            System.out.println(player.getName() + " managed to survive against the " + enemy.getName() + ".");
+        }
+        else{
+            System.out.println("The " + enemy.getName() + " has slain " + player.getName());
+        }
+    }
 }
