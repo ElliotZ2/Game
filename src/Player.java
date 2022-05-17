@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Player {
     String name;
@@ -15,7 +16,6 @@ public class Player {
     private final int BASE_DAMAGE = 15;
     private final double DAMAGE_RANGE = 0.25;
     public final int MAX_STATS_LEVEL = 10;
-    private boolean alive;
     private Weapon equippedWeapon;
 
     public Player(String name) {
@@ -26,7 +26,6 @@ public class Player {
         hunger = 0;
         thirst = 0;
         infectionLevel = 0;
-        alive = true;
         equippedWeapon = new Weapon("fists", 1);
     }
 
@@ -39,7 +38,6 @@ public class Player {
         hunger = 0;
         thirst = 0;
         infectionLevel = 0;
-        alive = true;
         equippedWeapon = weapon;
     }
 
@@ -161,10 +159,6 @@ public class Player {
         return infectionLevel;
     }
 
-    public boolean isAlive() {
-        return alive;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -197,8 +191,65 @@ public class Player {
     }
 
     public void accessInventory() {
+        String choice = "";
+        Scanner input = new Scanner(System.in);
         printInventory();
         System.out.println("Type the index of the item you want to access, or \"quit\" to exit out of your inventory");
-
+        choice = input.nextLine();
+        while(!choice.toLowerCase().equals("quit")) {
+            boolean isNumeric = true;
+            for(int i = 0; i < choice.length(); i++) {
+                if(! Character.isDigit(choice.charAt(i))) {
+                    isNumeric = false;
+                }
+            }
+            if(isNumeric) {
+                int index = Integer.parseInt(choice);
+                if(index < 0 || index >= inventory.size()) {
+                    System.out.println("Please enter a valid index:");
+                    choice = input.nextLine();
+                }
+                else{
+                    Item item = inventory.get(index);
+                    //TODO print out a description of the item later; also make a tostring for player and all item classes
+                    if(item instanceof Weapon) {
+                        System.out.println("Would you like to equip " + item.getName() + "?");
+                        if(equippedWeapon == null) {
+                            System.out.println("You currently don't have an equipped weapon");
+                        }
+                        else{
+                            System.out.println("You currently have a " + equippedWeapon + " equipped.");
+                        }
+                        choice = input.nextLine();
+                        if(choice.substring(0,1).toLowerCase().equals("y")) {
+                            if(equippedWeapon != null) {
+                                addToInventory(equippedWeapon);
+                            }
+                            equippedWeapon = (Weapon) item;
+                            inventory.remove(index);
+                        }
+                    }
+                    else if(item instanceof Consumable) {
+                        String action = "";
+                        Consumable c = (Consumable) item;
+                        if(c.getType().equals("food")) {
+                            action = "eat";
+                        }
+                        else if(c.getType().equals("drink")) {
+                            action = "drink";
+                        }
+                        else{
+                            action = "use";
+                        }
+                        System.out.println("Would you like to " + action + " the " + item.getName() + "?");
+                        choice = input.nextLine();
+                        if(choice.substring(0,1).toLowerCase().equals("y")) {
+                            consumeItem(c);
+                            inventory.remove(index);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

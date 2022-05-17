@@ -42,7 +42,8 @@ public class Event {
             choice = input.nextLine();
         }
         if(choice.equals("fight")) {
-            System.out.println("fight");
+            System.out.println("You chose to look for a fight.");
+            fight(player);
         }
         else if(choice.equals("look")) {
             System.out.println("look");
@@ -88,13 +89,51 @@ public class Event {
     }
 
     public static void fight(Player player) {
-        //create enemy class?
+        //the player can choose to try and avoid the fight, but they may be unsuccessful, and they will also gain hunger and thirst
+        double random = Math.random();
+        Enemy enemy;
+        String endPunc = ".";
+        String choice = "";
+        Scanner input = new Scanner(System.in);
+        if(random < 0.5) {
+            enemy = Enemy.generateRandomBasicEnemy();
+        }
+        else if(random < 0.8) {
+            enemy = Enemy.generateRandomMedEnemy();
+        }
+        else{
+            enemy = Enemy.generateRandomAdvancedEnemy();
+            endPunc = "!";
+        }
+        System.out.println("You encountered a " + enemy.getName() + endPunc);
+        System.out.println("Are you going try and avoid battle with the " + enemy.getName() + "?");
+        choice = input.nextLine();
+        if(choice.length() > 0 && choice.substring(0,1).toLowerCase().equals("y")) {
+            player.increaseThirst(10);
+            player.increaseHunger(10);
+            if(Math.random() < 0.7) {
+                System.out.println("You were able to avoid a battle with the " + enemy.getName() + ".");
+                System.out.println("You gained 10 hunger and 10 thirst while you were running away.");
+                return;
+            }
+            else{
+                System.out.println("You gained 10 hunger and 10 thirst while trying to run away.");
+                System.out.println("You were unable to escape the " + enemy.getName() + ".");
+            }
+        }
+        battle(player,enemy);
+        if(player.getHealth() > 0) {
+            Item i = enemy.dropItem();
+            System.out.println("The " + enemy.getName() + " dropped a " + i.getName() + ".");
+            player.addToInventory(i);
+        }
+
     }
 
     public static void battle(Player player, Enemy enemy) {
-        int r = 0;
+        boolean playerTurn = true;
         while(player.isAlive() == true && player.getHealth() > 0 && enemy.getHealth() > 0) {
-            if(r % 2 == 0) {
+            if(playerTurn) {
                 int damage = player.attack();
                 enemy.takeDamage(damage);
                 System.out.println(player.getName() + " attacked the " + enemy.getName() + " for " + damage + " damage " + " with their " + player.getEquippedWeapon().getName() + ".");
@@ -118,7 +157,7 @@ public class Event {
                 }
                 System.out.println();
             }
-            r++;
+            playerTurn = !playerTurn;
         }
         if(player.getHealth() > 0) {
             System.out.println(player.getName() + " managed to survive against the " + enemy.getName() + ".");

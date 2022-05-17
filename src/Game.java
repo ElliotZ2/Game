@@ -22,7 +22,7 @@ public class Game {
         }
         player.setName(playerName);
         System.out.println("Welcome to the zombie apocalypse, " + player.getName() + ".");
-        while(player.isAlive()) {
+        while(player.getHealth() > 0) {
             Event.day(player);
         }
     }

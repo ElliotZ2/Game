@@ -4,12 +4,28 @@ public class Enemy {
     private int damage;
     private double chanceToHit;
     private String weaponDrop; //none, low, med, or high
+    private static final Enemy[] allBasicEnemies =
+            {
+                    new Enemy("civilian zombie", 70, 10, "none"),
+                    new Enemy("salesperson zombie", 80, 9, "none"),
+            };
+    private static final Enemy[] allMedEnemies =
+            {
+                    new Enemy("firefighter zombie", 100, 15, "low"),
+                    new Enemy("police zombie", 90, 17, "low"),
+                    new Enemy("gangster zombie", 85, 20, "low")
+            };
+    private static final Enemy[] allAdvancedEnemies =
+            {
+                    new Enemy("soldier zombie", 150, 20, "med"),
+                    new Enemy("mutated zombie", 200, 20, "high")
+            };
 
     public Enemy(String name, int health, int damage, String weaponDrop){
         this.name = name;
         this.health = health;
         this.damage = damage;
-        this.weaponDrop = weaponDrop;
+        this.weaponDrop = weaponDrop; //none low med high
         chanceToHit = 0.25;
     }
 
@@ -60,5 +76,17 @@ public class Enemy {
             return Weapon.generateRandomHighTierWeapon();
         }
         return null;
+    }
+
+    public static Enemy generateRandomBasicEnemy() {
+        return allBasicEnemies[(int) (Math.random() * allBasicEnemies.length)];
+    }
+
+    public static Enemy generateRandomMedEnemy() {
+        return allMedEnemies[(int) (Math.random() * allMedEnemies.length)];
+    }
+
+    public static Enemy generateRandomAdvancedEnemy() {
+        return allAdvancedEnemies[(int) (Math.random() * allAdvancedEnemies.length)];
     }
 }
