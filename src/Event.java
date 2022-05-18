@@ -5,6 +5,7 @@ public class Event {
     private static final int THIRST_INCREASE = 5;
     private static final int HUNGER_INCREASE = 5;
 
+    //TODO move all this to the game class
 
     public static void testEvent(Player player) {
         player.increaseHunger(40);
@@ -132,7 +133,7 @@ public class Event {
 
     public static void battle(Player player, Enemy enemy) {
         boolean playerTurn = true;
-        while(player.isAlive() == true && player.getHealth() > 0 && enemy.getHealth() > 0) {
+        while(player.getHealth() > 0 && enemy.getHealth() > 0) {
             if(playerTurn) {
                 int damage = player.attack();
                 enemy.takeDamage(damage);
@@ -164,6 +165,25 @@ public class Event {
         }
         else{
             System.out.println("The " + enemy.getName() + " has slain " + player.getName());
+        }
+    }
+
+    public static void lookForHumans(Player player) {
+        /*possibilities for looking for humans:
+        -you meet a merchant and they offer a trade
+        -after a certain day threshold, you can meet certain people that ends the game and is considered a win: bandits, military,
+        -meeting bad guys that you have to fight
+        -meeting struggling survivors that you have the option to give something or steal something, doing so may unlock certain endings or have rewards
+         */
+        double random = Math.random();
+        if(random < 0.4) {
+
+        }
+        else if(random < 0.8) {
+
+        }
+        else{
+
         }
     }
 }

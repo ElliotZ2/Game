@@ -24,6 +24,11 @@ public class Weapon extends Item{
         this.damage = damage;
     }
 
+    public Weapon (String name, int damage, String description) {
+        super(name, description);
+        this.damage = damage;
+    }
+
     public static Weapon generateRandomLowTierWeapon() {
         return allLowTierWeapons[(int) (Math.random() * allLowTierWeapons.length)];
     }
@@ -38,5 +43,11 @@ public class Weapon extends Item{
 
     public int getDamage() {
         return damage;
+    }
+
+    public String toString() {
+        String s = super.toString();
+        s += "\nDamage: " + damage;
+        return s;
     }
 }

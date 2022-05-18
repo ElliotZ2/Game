@@ -1,9 +1,13 @@
 import java.util.Scanner;
 
+//TODO implement the option to leave after each night; also keep track of players' names and how many days they survived, and always print the top 10 days
+//TODO difficulty scale depending on the days
+
 public class Game {
 
     private Player player;
     private int daysSurvived;
+    private final int DAY_THRESHOLD_FOR_WIN = 10;
     private String timeOfDay; //day, afternoon, night
 
     public Game() {

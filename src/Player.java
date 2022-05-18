@@ -5,7 +5,7 @@ public class Player {
     String name;
     private ArrayList<Item> inventory;
     private int inventorySlots;
-    public final int MAX_HEALTH = 0;
+    public final int MAX_HEALTH = 100;
     private int health;
     private int hunger;
     public final int STARVING_LIMIT = 100;
@@ -30,13 +30,13 @@ public class Player {
     }
 
     //constructor for testing purposes only
-    public Player(String name, int hp, Weapon weapon) {
+    public Player(String name, int hp, int hunger, int thirst, Weapon weapon) {
         this.name = name;
         inventory = new ArrayList<Item>();
         inventorySlots = 6;
         health = hp;
-        hunger = 0;
-        thirst = 0;
+        this.hunger = hunger;
+        this.thirst = thirst;
         infectionLevel = 0;
         equippedWeapon = weapon;
     }
@@ -76,7 +76,7 @@ public class Player {
     public void printInventory() {
         String s = "Inventory: [";
         if(inventory.size() >= 1) {
-            s += inventory.get(0);
+            s += inventory.get(0).getName();
         }
         else{
             System.out.println("Inventory: Empty");
@@ -193,10 +193,11 @@ public class Player {
     public void accessInventory() {
         String choice = "";
         Scanner input = new Scanner(System.in);
-        printInventory();
-        System.out.println("Type the index of the item you want to access, or \"quit\" to exit out of your inventory");
-        choice = input.nextLine();
+        //System.out.println("Type the index of the item you want to access, or \"quit\" to exit out of your inventory");
         while(!choice.toLowerCase().equals("quit")) {
+            printInventory();
+            System.out.println("Type the index of the item you want to access, or \"quit\" to exit out of your inventory:");
+            choice = input.nextLine();
             boolean isNumeric = true;
             for(int i = 0; i < choice.length(); i++) {
                 if(! Character.isDigit(choice.charAt(i))) {
@@ -213,13 +214,14 @@ public class Player {
                     Item item = inventory.get(index);
                     //TODO print out a description of the item later; also make a tostring for player and all item classes
                     if(item instanceof Weapon) {
-                        System.out.println("Would you like to equip " + item.getName() + "?");
+                        System.out.println(item);
                         if(equippedWeapon == null) {
                             System.out.println("You currently don't have an equipped weapon");
                         }
                         else{
-                            System.out.println("You currently have a " + equippedWeapon + " equipped.");
+                            System.out.println("You currently have a " + equippedWeapon.getName() + " equipped that does " + equippedWeapon.getDamage() + " damage.");
                         }
+                        System.out.println("Would you like to equip the " + item.getName() + "?");
                         choice = input.nextLine();
                         if(choice.substring(0,1).toLowerCase().equals("y")) {
                             if(equippedWeapon != null) {
@@ -251,5 +253,14 @@ public class Player {
                 }
             }
         }
+    }
+
+    public String toString() {
+        String s = "Stats for " + name + ":\n";
+        s += "Health: " + health + "\n";
+        s += "Hunger Level: " + hunger + "\n";
+        s += "Thirst Level: " + thirst + "\n";
+        s += "Equipped Weapon: " + equippedWeapon.getName() + "\n";
+        return s;
     }
 }
