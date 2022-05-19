@@ -5,6 +5,11 @@ public class Consumable extends Item{
     private static final Consumable[] allFoods =
             {new Consumable("cookie", "food", 10),
             new Consumable("royal chicken dinner", "food", 100)};
+    private static final Consumable[] huntedFoods =
+            {new Consumable("chicken", "food", 30),
+            new Consumable("pork", "food", 35),
+            new Consumable("beef", "food", 40),
+            new Consumable("duck", "food", 25)};
     private static final Consumable[] allDrinks =
             {new Consumable("bottled water", "drink", 40),
             new Consumable("orange juice", "drink", 30)};
@@ -53,5 +58,9 @@ public class Consumable extends Item{
 
     public static Consumable generateRandomHealing() {
         return allHealing[(int) (Math.random() * allHealing.length)];
+    }
+
+    public static Consumable generateRandomHuntedFood() {
+        return huntedFoods[(int) (Math.random() * huntedFoods.length)];
     }
 }

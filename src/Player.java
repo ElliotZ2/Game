@@ -76,14 +76,14 @@ public class Player {
     public void printInventory() {
         String s = "Inventory: [";
         if(inventory.size() >= 1) {
-            s += inventory.get(0).getName();
+            s += "0 - " + inventory.get(0).getName();
         }
         else{
             System.out.println("Inventory: Empty");
             return;
         }
         for(int i = 1; i < inventory.size(); i++) {
-            s += ", " + inventory.get(i).getName();
+            s += ", " + i + " - " + inventory.get(i).getName();
         }
         s += "]";
         System.out.println(s);
@@ -225,7 +225,9 @@ public class Player {
                         choice = input.nextLine();
                         if(choice.substring(0,1).toLowerCase().equals("y")) {
                             if(equippedWeapon != null) {
-                                addToInventory(equippedWeapon);
+                                if(!equippedWeapon.getName().equals("fists")) {
+                                    addToInventory(equippedWeapon);
+                                }
                             }
                             equippedWeapon = (Weapon) item;
                             inventory.remove(index);
