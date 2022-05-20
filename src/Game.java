@@ -16,6 +16,7 @@ public class Game {
     public Game() {
         player = new Player("");
         timeOfDay = "day";
+        daysSurvived = 1;
     }
     public void playGame() {
         System.out.println("What is your name?:");
@@ -30,8 +31,23 @@ public class Game {
         player.setName(playerName);
         System.out.println("Welcome to the zombie apocalypse, " + player.getName() + ".");
         while(player.getHealth() > 0) {
-            day();
+            if(timeOfDay == "day") {
+                System.out.println("DAY: " + daysSurvived);
+                day();
+                timeOfDay = "afternoon";
+            }
+            else if(timeOfDay == "afternoon") {
+                afternoon();
+                timeOfDay = "night";
+            }
+            else{
+                night();
+                timeOfDay = "day";
+                daysSurvived++;
+            }
         }
+        System.out.println("YOU DIED!");
+        System.out.println(player.getName() + " was able to survive for " + daysSurvived + " days.");
     }
 
     private void decrementPlayerStats() {
@@ -133,14 +149,24 @@ public class Game {
                 battle(Enemy.generateRandomMedEnemy());
             }
             else{
-                //TODO THIS IS WHERE YOU LEFT OFF
+                if(Math.random() < 0.5) {
+                    System.out.println("You managed to find some cloth and make a bandage.");
+                    player.addToInventory(new Consumable("bandages", "healing", 15));
+                }
+                else{
+                    System.out.println("You found some medicinal herbs."); {
+                        player.addToInventory(new Consumable("medicinal herbs", "healing", 10));
+                    }
+                }
             }
         }
+        decrementPlayerStats();
     }
 
     private void night() {
         //player can choose to sleep to regain health, but they have a chance to get ambushed
         //
+        System.out.println("night");
     }
 
     private void scavenge(Player player) {
@@ -256,19 +282,59 @@ public class Game {
     private void lookForHumans(Player player) {
         /*possibilities for looking for humans:
         -you meet a merchant and they offer a trade
-        -after a certain day threshold, you can meet certain people that ends the game and is considered a win: bandits, military,
+        -after a certain day threshold, you can meet certain people that ends the game and is considered a win:endings:bandit,military, government, lone wolf (neutral one where you find a ship or something and live out the rest of your life in safety)
         -meeting bad guys that you have to fight
         -meeting struggling survivors that you have the option to give something or steal something, doing so may unlock certain endings or have rewards
          */
+        String choice = "";
+        Scanner input = new Scanner(System.in);
         double random = Math.random();
-        if(random < 0.4) {
-
+        if(random < 0.3) {
+            String[] modesOFTransport = {"bike", "camel", "horse", "wagon", "unicycle", "boat", "ship"};
+            String modeOfTransport = modesOFTransport[(int) (Math.random() * modesOFTransport.length)];
+            System.out.println("You meet a strange merchant on a " + modeOfTransport + "who seems willing to offer you something for a price.");
+            Consumable c = Consumable.generateRandomConsumable();
+            if(Math.random() < 0.65) {
+                //item to item
+            }
+            else{
+                String[] actions = {"sing", "dance", "do a flip", "break-dance", "show a magic trick", "do a back flip"};
+                String action = actions[(int) (Math.random() * actions.length)];
+                System.out.println("The merchant is willing to give you a " + c.getName() + " if you agree to " + action + ".");
+                System.out.println("Are you willing to " + action + " for a " + c.getName() + "?:");
+                choice = input.nextLine();
+                if(choice.length() > 0 && choice.toLowerCase().substring(0,1).equals("y")) {
+                    if(Math.random() > 0.5) {
+                        System.out.println("You put on a spectacular performance, and the merchant rewarded you with a " + c.getName() + " for your display.");
+                        player.addToInventory(c);
+                    }
+                    else{
+                        System.out.println("You tried your best to " + action + ", but ended up hurting yourself and failing.");
+                        System.out.println("The merchant rides away dissatisfied with your performance, and you end up leaving with nothing gained.");
+                        player.takeDamage(10);
+                    }
+                }
+                else{
+                    System.out.println("You decide not to mess with sketchy merchants and walk away.");
+                }
+            }
         }
         else if(random < 0.8) {
-
+            System.out.println("You encounter a sketchy person armed with weapons.");
+            System.out.println("You prepare yourself for a battle.");
+            battle(Enemy.generateRandomHumanEnemy());
         }
         else{
-
+            System.out.println("You come across a group of struggling survivors; they haven't noticed your presence yet.");
+            System.out.println("Options: \"steal\" from them, \"give\" them something to help, or \"leave\" them be.");
+            System.out.println("What do you want to do?");
+            choice = input.nextLine();
+            while(!(choice.equals("steal") || choice.equals("give") || choice.equals("leave"))) {
+                System.out.println("Please enter a valid choice.");
+                System.out.println("Options: \"steal\" from them, \"give\" them something to help, or \"leave\" them be.");
+                choice = input.nextLine();
+            }
+            //TODO this part
         }
     }
 }

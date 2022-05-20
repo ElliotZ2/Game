@@ -5,7 +5,8 @@ public class Weapon extends Item{
             new Weapon("bat", 5),
             new Weapon("shovel", 7),
             new Weapon("fork", 2),
-            new Weapon("pencil", 3)};
+            new Weapon("pencil", 3),
+            new Weapon("wrench", 4)};
     private static final Weapon[] allMedTierWeapons =
             {new Weapon("knife", 12),
             new Weapon("spear", 15),

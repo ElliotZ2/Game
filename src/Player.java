@@ -26,7 +26,7 @@ public class Player {
         hunger = 0;
         thirst = 0;
         infectionLevel = 0;
-        equippedWeapon = new Weapon("fists", 1);
+        equippedWeapon = new Weapon("pair of fists", 1);
     }
 
     //constructor for testing purposes only
@@ -225,7 +225,7 @@ public class Player {
                         choice = input.nextLine();
                         if(choice.substring(0,1).toLowerCase().equals("y")) {
                             if(equippedWeapon != null) {
-                                if(!equippedWeapon.getName().equals("fists")) {
+                                if(!equippedWeapon.getName().equals("pair of fists")) {
                                     addToInventory(equippedWeapon);
                                 }
                             }

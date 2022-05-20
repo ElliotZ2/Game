@@ -18,7 +18,13 @@ public class Enemy {
     private static final Enemy[] allAdvancedEnemies =
             {
                     new Enemy("soldier zombie", 150, 20, "med"),
-                    new Enemy("mutated zombie", 200, 20, "high")
+                    new Enemy("mutated zombie", 200, 20, "high"),
+                    new Enemy("giant zombie", 300, 15, "high")
+            };
+    private static final Enemy[] humanEnemies =
+            {
+                    new Enemy("bandit", 100, 20, "none"),
+                    new Enemy("scavenger", 125, 10, "none"),
             };
 
     public Enemy(String name, int health, int damage, String weaponDrop){
@@ -88,6 +94,33 @@ public class Enemy {
 
     public static Enemy generateRandomAdvancedEnemy() {
         return allAdvancedEnemies[(int) (Math.random() * allAdvancedEnemies.length)];
+    }
+
+    public static Enemy generateRandomHumanEnemy() {
+        return humanEnemies[(int) (Math.random() * humanEnemies.length)];
+    }
+
+    public static Enemy generateRandomEnemy(double b, double m, double a) {
+        double random = Math.random();
+        if(random < b) {
+            System.out.println("basic");
+            return generateRandomBasicEnemy();
+        }
+        if(random < m + b) {
+            System.out.println("medium");
+            return generateRandomMedEnemy();
+        }
+        if(random < m + b + a) {
+            System.out.println("advanced");
+            return generateRandomAdvancedEnemy();
+        }
+        return null;
+    }
+
+    public void scaleEnemy(double factor) {
+        health = (int) (health * factor);
+        damage = (int) (damage * factor);
+
     }
 
     //TODO add a generate random enemy method with 3 parameters with the probabilities for a basic, med, and advanced enemy for easier generation of enemies, and also possible scaling of enemies
