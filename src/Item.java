@@ -19,6 +19,10 @@ public class Item {
         return name;
     }
 
+    public void setName(String n) {
+        name = n;
+    }
+
     public String toString() {
         String s = getName();
         if(description != null) {

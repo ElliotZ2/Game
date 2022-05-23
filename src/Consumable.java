@@ -16,6 +16,9 @@ public class Consumable extends Item{
     private static final Consumable[] allHealing =
             {new Consumable("bandages", "healing", 15),
             new Consumable("medkit", "healing", 45)};
+    private static final Consumable[] allCuring =
+            {new Consumable("type 0 vaccine", "curing", 50),
+            new Consumable("prototype vaccine", "curing", 25)};
 
     public Consumable(String name, String type, int effectiveness) {
         super(name);

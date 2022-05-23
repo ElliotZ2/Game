@@ -1,5 +1,8 @@
 public class Weapon extends Item{
     private int damage;
+    private int timesEnhanced;
+    private final int MAX_ENHANCES = 5;
+    private final double sharpenMultiplier = 0.1;
     private static final Weapon[] allLowTierWeapons =
             {new Weapon("toothpick", 1),
             new Weapon("bat", 5),
@@ -23,6 +26,7 @@ public class Weapon extends Item{
     public Weapon (String name, int damage) {
         super(name);
         this.damage = damage;
+        timesEnhanced = 0;
     }
 
     public Weapon (String name, int damage, String description) {
@@ -44,6 +48,37 @@ public class Weapon extends Item{
 
     public int getDamage() {
         return damage;
+    }
+
+    public void setDamage(int d) {
+        damage = d;
+    }
+
+    public void enhance() {
+        if(getName().equals("fists")) {
+            System.out.println("You then realize that you probably shouldn't hammer your fists in order to enhance it.");
+            return;
+        }
+        if(timesEnhanced >= MAX_ENHANCES) {
+            System.out.println("You can't enhance your weapon anymore beyond " + timesEnhanced + " times.");
+        }
+        else{
+            if(Math.random() <= 0.10) {
+                System.out.println("You tried to enhance your " + getName() + ", but ended up breaking it.");
+                breakWeapon();
+            }
+            else{
+                int previousDamage = damage;
+                setDamage((int) (damage * (1.0 + sharpenMultiplier)) + 1);
+                System.out.println("You enhanced your " + getName() + " and increased its damage from " + previousDamage + " to " + damage + ".");
+                timesEnhanced++;
+            }
+        }
+    }
+
+    public void breakWeapon() {
+        setName("broken " + getName());
+        damage = (int) (damage * 0.3);
     }
 
     public String toString() {

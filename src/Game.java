@@ -50,7 +50,8 @@ public class Game {
         System.out.println(player.getName() + " was able to survive for " + daysSurvived + " days.");
     }
 
-    private void decrementPlayerStats() {
+    private void decrementPlayerStats() { //TODO finish this, make it so that if hunger or thirst is too high they lose hp
+        //TODO add the infection level and new consumable type
         player.increaseHunger(HUNGER_INCREASE);
         player.increaseThirst(THIRST_INCREASE);
     }
@@ -80,14 +81,15 @@ public class Game {
             choice = input.nextLine();
         }
         if(choice.equals("fight")) {
-            System.out.println("You chose to look for a fight.");
+            //System.out.println("You chose to look for a fight.");
             fight();
         }
         else if(choice.equals("look")) {
-            System.out.println("look");
+            //System.out.println("You chose to look for people.");
+            lookForHumans();
         }
         else if(choice.equals("scavenge")) {
-            System.out.println("You chose to scavenge for loot.");
+            //System.out.println("You chose to scavenge for loot.");
             scavenge(player);
         }
         else{
@@ -165,8 +167,58 @@ public class Game {
 
     private void night() {
         //player can choose to sleep to regain health, but they have a chance to get ambushed
-        //
-        System.out.println("night");
+        //they can also choose to "guard" and fortify their base to prevent a zombie attack or player raid
+        //they can also choose to "enhance" their weapon to increase its base attack up to a certain point (5 sharpens) but it has a 10% chance to break when sharpening
+        String choice = "";
+        Scanner input = new Scanner(System.in);
+        String options = "Options: \"sleep\" and regain health, \"guard\" and fortify your base to prevent an attack, \"enhance\" your currently equipped weapon, access your \"inventory\", or check your \"stats\".";
+        System.out.println("Night has fallen.");
+        System.out.println("What would you like to do for the night?");
+        System.out.println(options);
+        choice = input.nextLine();
+        choice = choice.toLowerCase();
+        while(!(choice.equals("sleep") || choice.equals("guard") || choice.equals("enhance"))) {
+            if(choice.equals("inventory")) {
+                player.accessInventory();
+                System.out.println("After accessing your inventory, what would you like to do for the night?");
+            }
+            else if(choice.equals("stats")) {
+                System.out.println(player);
+                System.out.println("After checking " + player.getName() + "\'s stats, what would you like to do for the night?");
+            }
+            else{
+                System.out.println("Please enter a valid option.");
+            }
+            System.out.println(options);
+            choice = input.nextLine();
+            choice = choice.toLowerCase();
+        }
+        if(choice.equals("sleep")) {
+            if(Math.random() < 0.75) {
+                int previousHealth = player.getHealth();
+                player.heal(20);
+                int restoredHealth = player.getHealth() - previousHealth;
+                System.out.println("You were able to sleep and restore " + restoredHealth + " health.");
+            }
+            else{
+                String[] thingsHeard = {"your door break open", "footsteps getting closer"};
+                String thingHeard = thingsHeard[(int) (Math.random() * thingsHeard.length)];
+                System.out.println("As soon as you try to go to sleep, you suddenly hear " + thingHeard + ".");
+                Enemy e = Enemy.generateRandomEnemy(0.2,0.3,0.5);
+                System.out.println("You prepare yourself to defend your home against a " + e.getName());
+                battle(e);
+            }
+        }
+        else if(choice.equals("guard")) {
+            int previousHealth = player.getHealth();
+            player.heal(5);
+            int restoredHealth = player.getHealth() - previousHealth;
+            System.out.println("You were guard your house whilst resting and restoring " + restoredHealth + " health.");
+        }
+        else {//enhancing weapon
+            System.out.println("You place your " + player.getEquippedWeapon().getName() + " on a workbench and attempt to enhance it.");
+            player.getEquippedWeapon().enhance();
+        }
     }
 
     private void scavenge(Player player) {
@@ -279,7 +331,7 @@ public class Game {
         }
     }
 
-    private void lookForHumans(Player player) {
+    private void lookForHumans() {
         /*possibilities for looking for humans:
         -you meet a merchant and they offer a trade
         -after a certain day threshold, you can meet certain people that ends the game and is considered a win:endings:bandit,military, government, lone wolf (neutral one where you find a ship or something and live out the rest of your life in safety)
@@ -334,7 +386,41 @@ public class Game {
                 System.out.println("Options: \"steal\" from them, \"give\" them something to help, or \"leave\" them be.");
                 choice = input.nextLine();
             }
-            //TODO this part
+            if(choice.equals("steal")) {
+                Consumable c = Consumable.generateRandomConsumable();
+                System.out.println("You swiftly snatch a random box that says \"" + c.getName() + "\" for yourself and dash away.");
+            }
+            else if(choice.equals("give")) {
+                if(player.getInventory().size() == 0) {
+                    System.out.println("You walk up to the survivors and offer them fresh air because your inventory is empty.");
+                    System.out.println("The survivors walk away unamused.");
+                }
+                else{
+                    System.out.println("What item are you willing to offer?");
+                    player.printInventory();
+                    System.out.println("Type the index of the item you're giving away:");
+                    choice = input.nextLine();
+                    boolean isNumeric = false;
+                    while(!choice.toLowerCase().equals("quit") && (isNumeric == false || Integer.parseInt(choice) < 0 || Integer.parseInt(choice) >= player.getInventory().size())) {
+                        isNumeric = true;
+                        for(int i = 0; i < choice.length(); i++) {
+                            if(! Character.isDigit(choice.charAt(i))) {
+                                isNumeric = false;
+                            }
+                        }
+                        if(isNumeric == false) {
+                            System.out.println("Please enter a valid index, or type \"quit\" to give up on giving an item:");
+                            choice = input.nextLine();
+                        }
+                    }
+                    if(choice.toLowerCase().equals("quit")) {
+                        System.out.println("You decide that your items are too valuable to be given away to others, so you leave those survivors to struggle on their own.");
+                    }
+                    int index = Integer.parseInt(choice);
+                    System.out.println("You walk up to the survivors and offer them your " + player.getInventory().remove(index).getName() +".");
+                    System.out.println("They thank you for your generosity and leave you after some thoughtful goodbyes.");
+                }
+            }
         }
     }
 }

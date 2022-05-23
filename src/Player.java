@@ -17,6 +17,7 @@ public class Player {
     private final double DAMAGE_RANGE = 0.25;
     public final int MAX_STATS_LEVEL = 10;
     private Weapon equippedWeapon;
+    private boolean turning;
 
     public Player(String name) {
         this.name = name;
@@ -27,6 +28,7 @@ public class Player {
         thirst = 0;
         infectionLevel = 0;
         equippedWeapon = new Weapon("pair of fists", 1);
+        turning = false;
     }
 
     //constructor for testing purposes only
@@ -155,6 +157,14 @@ public class Player {
         }
     }
 
+    public boolean isTurning() {
+        return  turning;
+    }
+
+    public void setTurning(boolean b) {
+        turning = b;
+    }
+
     public int getInfectionLevel() {
         return infectionLevel;
     }
@@ -190,7 +200,7 @@ public class Player {
         }
     }
 
-    public void accessInventory() {
+    public void accessInventory() { //TODO add delete option
         String choice = "";
         Scanner input = new Scanner(System.in);
         //System.out.println("Type the index of the item you want to access, or \"quit\" to exit out of your inventory");
