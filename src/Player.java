@@ -169,6 +169,10 @@ public class Player {
         return infectionLevel;
     }
 
+    public void increaseInfectionLevel(int amount) {
+        infectionLevel += amount;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -182,6 +186,19 @@ public class Player {
         }
         else if(c.getType().equals("drink")) {
             decreaseThirst(c.getEffectiveness());
+        }
+        else if(c.getType().equals("curing")) {
+            if(infectionLevel > 0) {
+                infectionLevel -= c.getEffectiveness();
+                if(infectionLevel <= 0) {
+                    infectionLevel = 0;
+                    turning = false;
+                    System.out.println("You were able to stop yourself from turning into a zombie; your infection level is now at 0.");
+                }
+                else{
+                    System.out.println("You were able to decrease your infection level to " + infectionLevel + ", but you need more curing items to stop yourself from turning.");
+                }
+            }
         }
     }
 
@@ -200,13 +217,13 @@ public class Player {
         }
     }
 
-    public void accessInventory() { //TODO add delete option
+    public void accessInventory() {
         String choice = "";
         Scanner input = new Scanner(System.in);
         //System.out.println("Type the index of the item you want to access, or \"quit\" to exit out of your inventory");
         while(!choice.toLowerCase().equals("quit")) {
             printInventory();
-            System.out.println("Type the index of the item you want to access, or \"quit\" to exit out of your inventory:");
+            System.out.println("Type the index of the item you want to access, \"discard\" to choose to remove an item, or \"quit\" to exit out of your inventory:");
             choice = input.nextLine();
             boolean isNumeric = true;
             for(int i = 0; i < choice.length(); i++) {
@@ -222,7 +239,6 @@ public class Player {
                 }
                 else{
                     Item item = inventory.get(index);
-                    //TODO print out a description of the item later; also make a tostring for player and all item classes
                     if(item instanceof Weapon) {
                         System.out.println(item);
                         if(equippedWeapon == null) {
@@ -264,6 +280,35 @@ public class Player {
                     }
                 }
             }
+            else if(choice.toLowerCase().equals("discard")) {
+                if(inventory.size() == 0) {
+                    System.out.println("Your inventory is empty, so you don't have anything to discard.");
+                }
+                else{
+                    System.out.println("Type the index of the item you want to discard.");
+                    choice = input.nextLine();
+                    boolean isNumber = false;
+                    while(isNumber == false && Integer.parseInt(choice) < 0 || Integer.parseInt(choice) > 0) {
+                        isNumber = true;
+                        for(int i = 0; i < choice.length(); i++) {
+                            if(!Character.isDigit(choice.charAt(i))) {
+                                isNumber = false;
+                            }
+                        }
+                        System.out.println("Please enter a valid index:");
+                        choice = input.nextLine();
+                    }
+                    int index = Integer.parseInt(choice);
+                    System.out.println("Are you sure you want to discard your " + inventory.get(index).getName() + "?");
+                    choice = input.nextLine();
+                    if(choice.length() > 0 && choice.substring(0,1).toLowerCase().equals("y")) {
+                        System.out.println("You discarded your " + inventory.remove(index).getName() + ".");
+                    }
+                    else{
+                        System.out.println("You decided not to discard your " + inventory.get(index).getName() + ".");
+                    }
+                }
+            }
         }
     }
 
@@ -272,6 +317,9 @@ public class Player {
         s += "Health: " + health + "\n";
         s += "Hunger Level: " + hunger + "\n";
         s += "Thirst Level: " + thirst + "\n";
+        if(infectionLevel > 0) {
+            s += "Infection Level: " + infectionLevel + "\n";
+        }
         s += "Equipped Weapon: " + equippedWeapon.getName() + "\n";
         return s;
     }

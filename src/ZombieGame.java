@@ -3,9 +3,9 @@ import java.util.Scanner;
 //TODO implement the option to leave after each night; also keep track of players' names and how many days they survived, and always print the top 10 days
 //TODO difficulty scale depending on the days; enemies get more hp and damage (damage += (damage * 0.1) days^2)
 
-public class Game {
+public class ZombieGame {
     private static final int SLEEP_TIME = 0;//for future thread.sleep so that i can test fast by changing SLEEP_TIME to 0
-    private static final int THIRST_INCREASE = 5;
+    private static final int THIRST_INCREASE = 8;
     private static final int HUNGER_INCREASE = 5;
 
     private Player player;
@@ -13,7 +13,7 @@ public class Game {
     private final int DAY_THRESHOLD_FOR_WIN = 10;
     private String timeOfDay; //day, afternoon, night
 
-    public Game() {
+    public ZombieGame() {
         player = new Player("");
         timeOfDay = "day";
         daysSurvived = 1;
@@ -54,6 +54,27 @@ public class Game {
         //TODO add the infection level and new consumable type
         player.increaseHunger(HUNGER_INCREASE);
         player.increaseThirst(THIRST_INCREASE);
+        if(player.getHunger() >= 100) {
+            player.takeDamage(100);
+            System.out.println("YOU DIED OF STARVATION!");
+        }
+        else if(player.getHunger() >= 70) {
+            System.out.println("You feel your body getting weaker from the lack of food.");
+        }
+        if(player.getThirst() >= 100 && player.getHealth() > 0) {
+            player.takeDamage(100);
+            System.out.println("YOU DIED OF DEHYDRATION!");
+        }
+        else if(player.getThirst() >= 70) {
+            System.out.println("You feel your body getting weaker from the lack of hydration.");
+        }
+        if(player.isTurning()) {
+            player.increaseInfectionLevel(10);
+        }
+        if(player.getInfectionLevel() >= 100) {
+            System.out.println("YOUR INFECTION LEVEL REACHED THE POINT OF NO RETURN.");
+            player.takeDamage(100);
+        }
     }
 
     private void day() {
@@ -219,6 +240,7 @@ public class Game {
             System.out.println("You place your " + player.getEquippedWeapon().getName() + " on a workbench and attempt to enhance it.");
             player.getEquippedWeapon().enhance();
         }
+        decrementPlayerStats();
     }
 
     private void scavenge(Player player) {
@@ -286,16 +308,11 @@ public class Game {
             }
         }
         battle(enemy);
-        if(player.getHealth() > 0) {
-            Item i = enemy.dropItem();
-            System.out.println("The " + enemy.getName() + " dropped a " + i.getName() + ".");
-            player.addToInventory(i);
-        }
-
     }
 
     private void battle(Enemy enemy) {
         boolean playerTurn = true;
+        double numOfEnemyAttackHits = 0;
         while(player.getHealth() > 0 && enemy.getHealth() > 0) {
             if(playerTurn) {
                 int damage = player.attack();
@@ -313,6 +330,7 @@ public class Game {
                     player.takeDamage(damage);
                     System.out.println("The " + enemy.getName() + " attacked " + player.getName() + " for " + damage + " damage.");
                     System.out.println(player.getName() + " now has " + player.getHealth() + " health.");
+                    numOfEnemyAttackHits++;
                     /*
                     for adding the infection thing later
                     if(enemy.getName().contains("zombie")) {
@@ -325,6 +343,20 @@ public class Game {
         }
         if(player.getHealth() > 0) {
             System.out.println(player.getName() + " managed to survive against the " + enemy.getName() + ".");
+            if(player.getHealth() > 0) {
+                Item i = enemy.dropItem();
+                System.out.println("The " + enemy.getName() + " dropped a " + i.getName() + ".");
+                player.addToInventory(i);
+            }
+            if(enemy.getName().contains("zombie")) {
+                if(numOfEnemyAttackHits > 0) {
+                    if(player.isTurning() == false && Math.random() < numOfEnemyAttackHits * 0.1) {
+                        player.setTurning(true);
+                        System.out.println("The " + enemy.getName() + " managed to infect you during your battle.");
+                        System.out.println("Your infection level will steadily rise unless you use something to cure it.");
+                    }
+                }
+            }
         }
         else{
             System.out.println("The " + enemy.getName() + " has slain " + player.getName());

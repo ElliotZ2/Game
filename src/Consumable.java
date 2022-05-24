@@ -17,8 +17,9 @@ public class Consumable extends Item{
             {new Consumable("bandages", "healing", 15),
             new Consumable("medkit", "healing", 45)};
     private static final Consumable[] allCuring =
-            {new Consumable("type 0 vaccine", "curing", 50),
-            new Consumable("prototype vaccine", "curing", 25)};
+            {new Consumable("type 0 vaccine", "curing", 75),
+            new Consumable("prototype vaccine", "curing", 50),
+            new Consumable("type 51 vaccine", "curing", 100)};
 
     public Consumable(String name, String type, int effectiveness) {
         super(name);
@@ -42,11 +43,14 @@ public class Consumable extends Item{
 
     public static Consumable generateRandomConsumable() {
         double random = Math.random();
-        if(random < 0.3333) {
+        if(random < 0.25) {
             return generateRandomDrink();
         }
-        if(random < 0.6666) {
+        if(random < 0.50) {
             return generateRandomFood();
+        }
+        if(random< 0.75) {
+            return generateRandomCuring();
         }
         return generateRandomHealing();
     }
@@ -61,6 +65,10 @@ public class Consumable extends Item{
 
     public static Consumable generateRandomHealing() {
         return allHealing[(int) (Math.random() * allHealing.length)];
+    }
+
+    public static Consumable generateRandomCuring() {
+        return allCuring[(int) (Math.random() * allCuring.length)];
     }
 
     public static Consumable generateRandomHuntedFood() {

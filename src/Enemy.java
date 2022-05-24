@@ -69,7 +69,7 @@ public class Enemy {
     }
 
     public Item dropItem() { //this method is called when the enemy dies and a weapon drops
-        if(weaponDrop.equals("none")) {//since no weapons are dropped, just drop a random consumable
+        if(Math.random() < 0.5 || weaponDrop.equals("none")) { //all enemies that drop weapons have a chance to drop a consumable instead
             return Consumable.generateRandomConsumable();
         }
         else if(weaponDrop.equals("low")) {

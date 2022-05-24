@@ -55,7 +55,7 @@ public class Weapon extends Item{
     }
 
     public void enhance() {
-        if(getName().equals("fists")) {
+        if(getName().equals("pair of fists")) {
             System.out.println("You then realize that you probably shouldn't hammer your fists in order to enhance it.");
             return;
         }
