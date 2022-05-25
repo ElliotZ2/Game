@@ -1,22 +1,20 @@
 import java.util.Scanner;
 
-//TODO implement the option to leave after each night; also keep track of players' names and how many days they survived, and always print the top 10 days
-//TODO difficulty scale depending on the days; enemies get more hp and damage (damage += (damage * 0.1) days^2)
-
 public class ZombieGame {
-    private static final int SLEEP_TIME = 0;//for future thread.sleep so that i can test fast by changing SLEEP_TIME to 0
-    private static final int THIRST_INCREASE = 8;
-    private static final int HUNGER_INCREASE = 5;
+    private static final int THIRST_INCREASE = 10;
+    private static final int HUNGER_INCREASE = 8;
 
     private Player player;
     private int daysSurvived;
-    private final int DAY_THRESHOLD_FOR_WIN = 10;
+    private final int DAY_THRESHOLD_FOR_WIN = 5;
     private String timeOfDay; //day, afternoon, night
+    private boolean gameWon;
 
     public ZombieGame() {
         player = new Player("");
         timeOfDay = "day";
         daysSurvived = 1;
+        gameWon = false;
     }
     public void playGame() {
         System.out.println("What is your name?:");
@@ -30,10 +28,49 @@ public class ZombieGame {
         }
         player.setName(playerName);
         System.out.println("Welcome to the zombie apocalypse, " + player.getName() + ".");
+        double winPercentage = 0.0;
+        int standing = 0;
         while(player.getHealth() > 0) {
             if(timeOfDay == "day") {
                 System.out.println("DAY: " + daysSurvived);
-                day();
+                if(daysSurvived == DAY_THRESHOLD_FOR_WIN) {
+                    winPercentage = 1.0;
+                }
+                else if(daysSurvived > DAY_THRESHOLD_FOR_WIN) {
+                    winPercentage += 0.1;
+                }
+                if(Math.random() < winPercentage) {
+                    standing = player.getNumOfTimesGiven() - player.getNumOftimesStolen();
+                    if(standing == 0) {
+                        System.out.println("During the day, you stumble across a huge boat near the ocean.");
+                        System.out.println("It looks a little damaged, but definitely fixable.");
+                        System.out.println("Do you want to fix it? (ENDS GAME)");
+                    }
+                    else if(standing > 0) {
+                        System.out.println("During the day, you meet a coalition of people with military uniforms.");
+                        System.out.println("\"Hello, we\'re a group of survivors headed by the remnants of the US government.\"");
+                        System.out.println("\"We\'re looking to restore order and peace in the world, which is why we\'ll need virtuous people like you to help us.\"");
+                        System.out.println("\"Whad'ya think? Are you willing to join us for the greater good?\"");
+                        System.out.println("Do you want to join them? (ENDS GAME)");
+                    }
+                    else if(standing < 0) {
+                        System.out.println("During the day, you need a group of bandits near the entrance of a cave.");
+                        System.out.println("\"We've seen your plundering around this area.\"");
+                        System.out.println("\"We're looking for strong recruits like you to join our ranks.\"");
+                        System.out.println("\"After all, it's the survival of the fittest out here.\"");
+                        System.out.println("\"So what do you say? Are you willing to join us bandits?\"");
+                        System.out.println("Do you want to join them? (ENDS GAME)");
+                    }
+                    choice = input.nextLine();
+                    if(choice.substring(0,1).toLowerCase().equals("y")) {
+                        gameWon = true;
+                        break;
+                    }
+                    else{
+                        winPercentage = 0.1;
+                    }
+                }
+                else{day();}
                 timeOfDay = "afternoon";
             }
             else if(timeOfDay == "afternoon") {
@@ -46,26 +83,45 @@ public class ZombieGame {
                 daysSurvived++;
             }
         }
-        System.out.println("YOU DIED!");
-        System.out.println(player.getName() + " was able to survive for " + daysSurvived + " days.");
+        if(gameWon == true) {
+            String action = "";
+            if(standing == 0) {
+                action = "rode out on a ship";
+                System.out.println("LONE WOLF ENDING: You live out the rest of your life in peace on your ship, occasionally visiting islands and exploring.");
+            }
+            else if(standing > 0) {
+                action = "joined the US coalition";
+                System.out.println("MILITARY ENDING: You live out the rest of your life dedicating yourself to restoring peace to the world with the US Coalition.");
+            }
+            else if(standing < 0) {
+                action = "joined the group of bandits";
+                System.out.println("BANDIT ENDING: You live out the rest of your life surviving at all costs with your fellow bandits.");
+            }
+            System.out.println(player.getName() + " survived for " + daysSurvived + " on their own before they " + action + ".");
+            System.out.println("YOU WIN!");
+        }
+        else{
+            System.out.println(player.getName() + " was able to survive for " + daysSurvived + " days.");
+            System.out.println("YOU LOSE!");
+        }
+        //TODO add saving here
     }
 
-    private void decrementPlayerStats() { //TODO finish this, make it so that if hunger or thirst is too high they lose hp
-        //TODO add the infection level and new consumable type
+    private void decrementPlayerStats() {
         player.increaseHunger(HUNGER_INCREASE);
         player.increaseThirst(THIRST_INCREASE);
-        if(player.getHunger() >= 100) {
-            player.takeDamage(100);
+        if(player.getHunger() >= player.STARVING_LIMIT) {
+            player.takeDamage(player.MAX_HEALTH);
             System.out.println("YOU DIED OF STARVATION!");
         }
-        else if(player.getHunger() >= 70) {
+        else if(player.getHunger() >= 0.7 * player.STARVING_LIMIT) {
             System.out.println("You feel your body getting weaker from the lack of food.");
         }
-        if(player.getThirst() >= 100 && player.getHealth() > 0) {
-            player.takeDamage(100);
+        if(player.getThirst() >= player.DEHYDRATION_LIMIT && player.getHealth() > 0) {
+            player.takeDamage(player.MAX_HEALTH);
             System.out.println("YOU DIED OF DEHYDRATION!");
         }
-        else if(player.getThirst() >= 70) {
+        else if(player.getThirst() >= 0.7 * player.DEHYDRATION_LIMIT) {
             System.out.println("You feel your body getting weaker from the lack of hydration.");
         }
         if(player.isTurning()) {
@@ -73,7 +129,7 @@ public class ZombieGame {
         }
         if(player.getInfectionLevel() >= 100) {
             System.out.println("YOUR INFECTION LEVEL REACHED THE POINT OF NO RETURN.");
-            player.takeDamage(100);
+            player.takeDamage(player.MAX_HEALTH);
         }
     }
 
@@ -342,7 +398,7 @@ public class ZombieGame {
             playerTurn = !playerTurn;
         }
         if(player.getHealth() > 0) {
-            System.out.println(player.getName() + " managed to survive against the " + enemy.getName() + ".");
+            System.out.println(player.getName() + " managed to survive against the " + enemy.getName() + " with " + player.getHealth() + " health.");
             if(player.getHealth() > 0) {
                 Item i = enemy.dropItem();
                 System.out.println("The " + enemy.getName() + " dropped a " + i.getName() + ".");
@@ -376,7 +432,7 @@ public class ZombieGame {
         if(random < 0.3) {
             String[] modesOFTransport = {"bike", "camel", "horse", "wagon", "unicycle", "boat", "ship"};
             String modeOfTransport = modesOFTransport[(int) (Math.random() * modesOFTransport.length)];
-            System.out.println("You meet a strange merchant on a " + modeOfTransport + "who seems willing to offer you something for a price.");
+            System.out.println("You meet a strange merchant on a " + modeOfTransport + " who seems willing to offer you something for a price.");
             Consumable c = Consumable.generateRandomConsumable();
             if(Math.random() < 0.65) {
                 //item to item
@@ -403,7 +459,7 @@ public class ZombieGame {
                 }
             }
         }
-        else if(random < 0.8) {
+        else if(random < 0.7) {
             System.out.println("You encounter a sketchy person armed with weapons.");
             System.out.println("You prepare yourself for a battle.");
             battle(Enemy.generateRandomHumanEnemy());
@@ -421,6 +477,7 @@ public class ZombieGame {
             if(choice.equals("steal")) {
                 Consumable c = Consumable.generateRandomConsumable();
                 System.out.println("You swiftly snatch a random box that says \"" + c.getName() + "\" for yourself and dash away.");
+                player.incrementNumOftimesStolen();
             }
             else if(choice.equals("give")) {
                 if(player.getInventory().size() == 0) {
@@ -451,6 +508,7 @@ public class ZombieGame {
                     int index = Integer.parseInt(choice);
                     System.out.println("You walk up to the survivors and offer them your " + player.getInventory().remove(index).getName() +".");
                     System.out.println("They thank you for your generosity and leave you after some thoughtful goodbyes.");
+                    player.incrementNumOfTimesGiven();
                 }
             }
         }

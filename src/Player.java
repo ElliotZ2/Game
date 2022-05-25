@@ -15,9 +15,10 @@ public class Player {
     public final int INFECTION_LIMIt = 100;
     private final int BASE_DAMAGE = 15;
     private final double DAMAGE_RANGE = 0.25;
-    public final int MAX_STATS_LEVEL = 10;
     private Weapon equippedWeapon;
     private boolean turning;
+    private int numOftimesStolen;
+    private int numOfTimesGiven;
 
     public Player(String name) {
         this.name = name;
@@ -41,6 +42,8 @@ public class Player {
         this.thirst = thirst;
         infectionLevel = 0;
         equippedWeapon = weapon;
+        numOftimesStolen = 0;
+        numOfTimesGiven = 0;
     }
 
     public String getName() {
@@ -175,6 +178,22 @@ public class Player {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getNumOftimesStolen() {
+        return numOftimesStolen;
+    }
+
+    public void incrementNumOftimesStolen() {
+        numOftimesStolen++;
+    }
+
+    public int getNumOfTimesGiven() {
+        return numOfTimesGiven;
+    }
+
+    public void incrementNumOfTimesGiven() {
+        numOfTimesGiven++;
     }
 
     public void consumeItem(Consumable c) {
@@ -314,9 +333,9 @@ public class Player {
 
     public String toString() {
         String s = "Stats for " + name + ":\n";
-        s += "Health: " + health + "\n";
-        s += "Hunger Level: " + hunger + "\n";
-        s += "Thirst Level: " + thirst + "\n";
+        s += "Health: " + health + "/" + MAX_HEALTH +"\n";
+        s += "Hunger Level: " + hunger + "/" + STARVING_LIMIT +"\n";
+        s += "Thirst Level: " + thirst + "/" + DEHYDRATION_LIMIT +"\n";
         if(infectionLevel > 0) {
             s += "Infection Level: " + infectionLevel + "\n";
         }
