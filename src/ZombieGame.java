@@ -1,4 +1,9 @@
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.File;
 
 public class ZombieGame {
     private static final int THIRST_INCREASE = 10;
@@ -17,6 +22,7 @@ public class ZombieGame {
         gameWon = false;
     }
     public void playGame() {
+        load();//TODO make this better
         System.out.println("What is your name?:");
         String choice = "";
         Scanner input = new Scanner(System.in);
@@ -54,7 +60,7 @@ public class ZombieGame {
                         System.out.println("Do you want to join them? (ENDS GAME)");
                     }
                     else if(standing < 0) {
-                        System.out.println("During the day, you need a group of bandits near the entrance of a cave.");
+                        System.out.println("During the day, you meet a group of bandits near the entrance of a cave.");
                         System.out.println("\"We've seen your plundering around this area.\"");
                         System.out.println("\"We're looking for strong recruits like you to join our ranks.\"");
                         System.out.println("\"After all, it's the survival of the fittest out here.\"");
@@ -104,6 +110,7 @@ public class ZombieGame {
             System.out.println(player.getName() + " was able to survive for " + daysSurvived + " days.");
             System.out.println("YOU LOSE!");
         }
+        save();
         //TODO add saving here
     }
 
@@ -337,10 +344,10 @@ public class ZombieGame {
         String endPunc = ".";
         String choice = "";
         Scanner input = new Scanner(System.in);
-        if(random < 0.5) {
+        if(random < 0.4) {
             enemy = Enemy.generateRandomBasicEnemy();
         }
-        else if(random < 0.8) {
+        else if(random < 0.75) {
             enemy = Enemy.generateRandomMedEnemy();
         }
         else{
@@ -387,11 +394,6 @@ public class ZombieGame {
                     System.out.println("The " + enemy.getName() + " attacked " + player.getName() + " for " + damage + " damage.");
                     System.out.println(player.getName() + " now has " + player.getHealth() + " health.");
                     numOfEnemyAttackHits++;
-                    /*
-                    for adding the infection thing later
-                    if(enemy.getName().contains("zombie")) {
-                        infect the player
-                    }*/
                 }
                 System.out.println();
             }
@@ -435,7 +437,24 @@ public class ZombieGame {
             System.out.println("You meet a strange merchant on a " + modeOfTransport + " who seems willing to offer you something for a price.");
             Consumable c = Consumable.generateRandomConsumable();
             if(Math.random() < 0.65) {
-                //item to item
+                Weapon w  = Weapon.generateRandomMedTierWeapon();
+                System.out.println("The merchant is willing to offer you a " + w.getName()+".");
+                if(player.getInventory().size() == 0) {
+                    System.out.println("But it doesn't seem like you have anything, so the merchant rides away.");
+                }
+                else{
+                    int invIndex = (int) (Math.random() * player.getInventory().size());
+                    System.out.println("But you'll have to trade your " + player.getInventory().get(invIndex).getName() + ".");
+                    System.out.println("Do you want to trade your " + player.getInventory().get(invIndex).getName() + " for a " + w.getName() +"?");
+                    choice = input.nextLine();
+                    if(choice.length() > 0 && choice.substring(0,1).toLowerCase().equals("y")) {
+                        System.out.println("You traded your " + player.getInventory().remove(invIndex) + " for a " + w.getName() + ".");
+                        player.addToInventory(w);
+                    }
+                    else{
+                        System.out.println("You declined the trade offer and went on your merry way.");
+                    }
+                }
             }
             else{
                 String[] actions = {"sing", "dance", "do a flip", "break-dance", "show a magic trick", "do a back flip"};
@@ -511,6 +530,60 @@ public class ZombieGame {
                     player.incrementNumOfTimesGiven();
                 }
             }
+        }
+    }
+
+    public void save() {
+        try{
+            File f = new File("src/players.data");
+            f.createNewFile();
+            FileWriter fw = new FileWriter("src/players.data",true);
+            fw.write("Player name: " + player.getName() + "\n");
+            fw.write("Days survived: " + daysSurvived + "\n");
+            fw.write("Status: ");
+            if(gameWon) {
+                fw.write("Alive");
+            }
+            else{
+                fw.write("Deceased");
+            }
+            fw.write("\n");
+            fw.close();
+        }
+        catch(IOException e){
+            System.out.println("Unable to create file");
+            e.printStackTrace();
+        }
+    }
+
+    public void load() {
+        ArrayList<String> names = new ArrayList<String>();
+        ArrayList<Integer> daysSurvived = new ArrayList<Integer>();
+        ArrayList<String> statuses = new ArrayList<String>();
+        try{
+            File f = new File("src/players.data");
+            Scanner s = new Scanner(f);
+            while(s.hasNextLine()) {
+                String data = s.nextLine();
+                if(data.contains("Player name: ")) {
+                    names.add(data.substring(data.indexOf(": ")+2));
+                }
+                else if(data.contains("Days survived: ")) {
+                    String num = data.substring(data.indexOf(": ")+2);
+                    daysSurvived.add(Integer.parseInt(num));
+                }
+                else if(data.contains("Status: ")) {
+                    statuses.add(data.substring(data.indexOf(": ")+2));
+                }
+            }
+        }
+        catch(FileNotFoundException e) {
+
+        }
+        for(int i = 0; i < names.size(); i++) {
+            System.out.println(names.get(i));
+            System.out.println(daysSurvived.get(i));
+            System.out.println(statuses.get(i));
         }
     }
 }

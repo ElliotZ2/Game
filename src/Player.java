@@ -294,6 +294,7 @@ public class Player {
                         choice = input.nextLine();
                         if(choice.substring(0,1).toLowerCase().equals("y")) {
                             consumeItem(c);
+                            System.out.println("You " + action + " the " + item.getName());
                             inventory.remove(index);
                         }
                     }
@@ -307,7 +308,7 @@ public class Player {
                     System.out.println("Type the index of the item you want to discard.");
                     choice = input.nextLine();
                     boolean isNumber = false;
-                    while(isNumber == false && Integer.parseInt(choice) < 0 || Integer.parseInt(choice) > 0) {
+                    while(isNumber == false && Integer.parseInt(choice) < 0 || Integer.parseInt(choice) >= inventory.size()) {
                         isNumber = true;
                         for(int i = 0; i < choice.length(); i++) {
                             if(!Character.isDigit(choice.charAt(i))) {
