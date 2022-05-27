@@ -8,6 +8,7 @@ public class Enemy {
             {
                     new Enemy("civilian zombie", 70, 10, "none"),
                     new Enemy("salesperson zombie", 80, 9, "none"),
+                    new Enemy("construction worker zombie", 90, 10, "none")
             };
     private static final Enemy[] allMedEnemies =
             {
@@ -23,8 +24,9 @@ public class Enemy {
             };
     private static final Enemy[] humanEnemies =
             {
-                    new Enemy("bandit", 100, 20, "none"),
-                    new Enemy("scavenger", 125, 10, "none"),
+                    new Enemy("bandit", 100, 20, "low"),
+                    new Enemy("scavenger", 125, 10, "low"),
+                    new Enemy("rogue", 90, 22, "med")
             };
 
     public Enemy(String name, int health, int damage, String weaponDrop){

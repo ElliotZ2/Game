@@ -250,7 +250,10 @@ public class Player {
                     isNumeric = false;
                 }
             }
-            if(isNumeric) {
+            if(choice.length() == 0) {
+
+            }
+            else if(isNumeric) {
                 int index = Integer.parseInt(choice);
                 if(index < 0 || index >= inventory.size()) {
                     System.out.println("Please enter a valid index:");
