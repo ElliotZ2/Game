@@ -14,12 +14,14 @@ public class ZombieGame {
     private final int DAY_THRESHOLD_FOR_WIN = 7;
     private String timeOfDay; //day, afternoon, night
     private boolean gameWon;
+    private ZombieGameGUI gui;
 
     public ZombieGame() {
         player = new Player("");
         timeOfDay = "day";
         daysSurvived = 1;
         gameWon = false;
+        gui = new ZombieGameGUI(player);
     }
     public void playGame() {
         load();
@@ -34,6 +36,7 @@ public class ZombieGame {
             playerName = input.nextLine();
         }
         player.setName(playerName);
+        gui.run();
         System.out.println("Welcome to the zombie apocalypse, " + player.getName() + ".");
         double winPercentage = 0.0;
         int standing = 0;
@@ -112,6 +115,7 @@ public class ZombieGame {
             System.out.println("YOU LOSE!");
         }
         save();
+        System.exit(0);
     }
 
     private void decrementPlayerStats() {
@@ -138,6 +142,7 @@ public class ZombieGame {
             System.out.println("YOUR INFECTION LEVEL REACHED THE POINT OF NO RETURN.");
             player.takeDamage(player.MAX_HEALTH);
         }
+        gui.setAllPlayerStats();
     }
 
     private void day() {
@@ -151,7 +156,7 @@ public class ZombieGame {
         choice = choice.toLowerCase();
         while(!(choice.equals("scavenge") || choice.equals("look") || choice.equals("fight"))) {
             if(choice.equals("inventory")) {
-                player.accessInventory();
+                player.accessInventory(gui);
                 System.out.println("After accessing your inventory, what would you like to do for the day?");
             }
             else if(choice.equals("stats")) {
@@ -191,7 +196,7 @@ public class ZombieGame {
         choice = choice.toLowerCase();
         while(!(choice.equals("hunt") || choice.equals("water") || choice.equals("search"))) {
             if(choice.equals("inventory")) {
-                player.accessInventory();
+                player.accessInventory(gui);
                 System.out.println("After accessing your inventory, what would you like to do for the afternoon?");
             }
             else if(choice.equals("stats")) {
@@ -260,7 +265,7 @@ public class ZombieGame {
         choice = choice.toLowerCase();
         while(!(choice.equals("sleep") || choice.equals("guard") || choice.equals("enhance"))) {
             if(choice.equals("inventory")) {
-                player.accessInventory();
+                player.accessInventory(gui);
                 System.out.println("After accessing your inventory, what would you like to do for the night?");
             }
             else if(choice.equals("stats")) {
@@ -371,8 +376,17 @@ public class ZombieGame {
     }
 
     private void battle(Enemy enemy) {
+        int enemyMaxHp = enemy.getHealth();
         boolean playerTurn = true;
         double numOfEnemyAttackHits = 0;
+        try{
+            Thread.sleep(1000);
+        }
+        catch(Exception e) {
+            System.out.println(e);
+        }
+        gui.setEnemyName(enemy.getName());
+        gui.showEnemyData();
         while(player.getHealth() > 0 && enemy.getHealth() > 0) {
             if(playerTurn) {
                 int damage = player.attack();
@@ -380,6 +394,7 @@ public class ZombieGame {
                 System.out.println(player.getName() + " attacked the " + enemy.getName() + " for " + damage + " damage " + " with their " + player.getEquippedWeapon().getName() + ".");
                 System.out.println("The " + enemy.getName() + " now has " + enemy.getHealth() + " health.");
                 System.out.println();
+                gui.setEnemyHealth(enemy.getHealth(), enemyMaxHp);
             }
             else{
                 int damage = enemy.attack();
@@ -392,9 +407,16 @@ public class ZombieGame {
                     System.out.println(player.getName() + " now has " + player.getHealth() + " health.");
                     numOfEnemyAttackHits++;
                 }
+                gui.setAllPlayerStats();
                 System.out.println();
             }
             playerTurn = !playerTurn;
+            try{
+                Thread.sleep(500);
+            }
+            catch(Exception e) {
+                System.out.println(e);
+            }
         }
         if(player.getHealth() > 0) {
             System.out.println(player.getName() + " managed to survive against the " + enemy.getName() + " with " + player.getHealth() + " health.");
@@ -416,6 +438,7 @@ public class ZombieGame {
         else{
             System.out.println("The " + enemy.getName() + " has slain " + player.getName());
         }
+        gui.hideEnemyData();
     }
 
     private void lookForHumans() {
@@ -493,6 +516,7 @@ public class ZombieGame {
             if(choice.equals("steal")) {
                 Consumable c = Consumable.generateRandomConsumable();
                 System.out.println("You swiftly snatch a random box that says \"" + c.getName() + "\" for yourself and dash away.");
+                player.addToInventory(c);
                 player.incrementNumOftimesStolen();
             }
             else if(choice.equals("give")) {
@@ -555,6 +579,7 @@ public class ZombieGame {
         ArrayList<String> names = new ArrayList<String>();
         ArrayList<Integer> daysSurvived = new ArrayList<Integer>();
         ArrayList<String> statuses = new ArrayList<String>();
+        boolean hasPreviousSaves = true;
         try{
             File f = new File("src/players.data");
             Scanner s = new Scanner(f);
@@ -568,34 +593,42 @@ public class ZombieGame {
                     daysSurvived.add(Integer.parseInt(num));
                 }
                 else if(data.contains("Status: ")) {
+                    System.out.println("yo");
                     statuses.add(data.substring(data.indexOf(": ")+2));
                 }
             }
         }
         catch(FileNotFoundException e) {
-
+            hasPreviousSaves = false;
         }
-        int longestNameLength = 0;
-        for(int i = 0; i < names.size(); i++) {
-            if(names.get(i).length() > longestNameLength) {
-                longestNameLength = names.get(i).length();
+        if(names.size() == 0) {
+            hasPreviousSaves = false;
+        }
+        if(hasPreviousSaves) {
+            int longestNameLength = 20;
+            for(int i = 0; i < names.size(); i++) {
+                if(names.get(i).length() > longestNameLength) {
+                    longestNameLength = names.get(i).length();
+                }
             }
-        }
-        String longSpace = "";
-        for(int i = 0; i < longestNameLength; i++) {
-            longSpace += " ";
-        }
-        System.out.println("Previous survival runs:");
-        System.out.println("  Survivor Name: " + longSpace.substring(0, longestNameLength - "Survivor Name:".length()) + "    Days survived:      Status:");
-        for(int i = 0; i < names.size(); i++) {
-            System.out.print((i+1) + ".");
-            System.out.print(names.get(i));
-            System.out.print(longSpace.substring(0,longestNameLength - names.get(i).length()));
-            System.out.print("     ");
-            System.out.print(daysSurvived.get(i));
-            System.out.print("                    ".substring(("" + daysSurvived.get(i)).length() ));
-            System.out.print(statuses.get(i));
-            System.out.println();
+            String longSpace = "";
+            for(int i = 0; i < longestNameLength; i++) {
+                longSpace += " ";
+            }
+            System.out.println(longSpace.length());
+            System.out.println(longestNameLength);
+            System.out.println("Previous survival runs:");
+            System.out.println("  Survivor Name: " + longSpace.substring(0, longestNameLength - "Survivor Name:".length()) + "    Days survived:      Status:");
+            for(int i = 0; i < names.size(); i++) {
+                System.out.print((i+1) + ".");
+                System.out.print(names.get(i));
+                System.out.print(longSpace.substring(0,longestNameLength - names.get(i).length()));
+                System.out.print("     ");
+                System.out.print(daysSurvived.get(i));
+                System.out.print("                    ".substring(("" + daysSurvived.get(i)).length() ));
+                System.out.print(statuses.get(i));
+                System.out.println();
+            }
         }
     }
 }

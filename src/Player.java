@@ -236,7 +236,7 @@ public class Player {
         }
     }
 
-    public void accessInventory() {
+    public void accessInventory(ZombieGameGUI gui) {
         String choice = "";
         Scanner input = new Scanner(System.in);
         //System.out.println("Type the index of the item you want to access, or \"quit\" to exit out of your inventory");
@@ -332,6 +332,7 @@ public class Player {
                     }
                 }
             }
+            gui.setAllPlayerStats();
         }
     }
 

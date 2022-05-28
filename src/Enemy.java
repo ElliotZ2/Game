@@ -34,7 +34,7 @@ public class Enemy {
         this.health = health;
         this.damage = damage;
         this.weaponDrop = weaponDrop; //none low med high
-        chanceToHit = 0.25;
+        chanceToHit = 0.4;
     }
 
     public Enemy(String name, int health, int damage, double chanceToHit, String weaponDrop) {
@@ -105,15 +105,12 @@ public class Enemy {
     public static Enemy generateRandomEnemy(double b, double m, double a) {
         double random = Math.random();
         if(random < b) {
-            System.out.println("basic");
             return generateRandomBasicEnemy();
         }
         if(random < m + b) {
-            System.out.println("medium");
             return generateRandomMedEnemy();
         }
         if(random < m + b + a) {
-            System.out.println("advanced");
             return generateRandomAdvancedEnemy();
         }
         return null;

@@ -1,6 +1,16 @@
+import java.util.Scanner;
+
 public class ZombieGameTester {
     public static void main(String[] args) {
         /*
+        ZombieGameGUI gui = new ZombieGameGUI();
+        gui.run();
+        Scanner input = new Scanner(System.in);
+        for(int i = 0; i < 10; i++) {
+            int x = input.nextInt();
+            gui.setPlayerHealth(x);
+        }
+
         TODO:
         -make another way to get vaccine, either during afternoon or night time
         -not all batles are dropping loot
