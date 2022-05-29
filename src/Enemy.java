@@ -2,7 +2,7 @@ public class Enemy {
     private String name;
     private int health;
     private int damage;
-    private double chanceToHit;
+    private final double CHANCE_TO_HIT = 0.4;
     private String weaponDrop; //none, low, med, or high
     private static final Enemy[] allBasicEnemies =
             {
@@ -34,19 +34,10 @@ public class Enemy {
         this.health = health;
         this.damage = damage;
         this.weaponDrop = weaponDrop; //none low med high
-        chanceToHit = 0.4;
-    }
-
-    public Enemy(String name, int health, int damage, double chanceToHit, String weaponDrop) {
-        this.name = name;
-        this.health = health;
-        this.damage = damage;
-        this.weaponDrop = weaponDrop;
-        this.chanceToHit = chanceToHit;
     }
 
     public int attack() {
-        if(Math.random() > chanceToHit) {
+        if(Math.random() > CHANCE_TO_HIT) {
             return 0;
         }
         else{
@@ -87,15 +78,18 @@ public class Enemy {
     }
 
     public static Enemy generateRandomBasicEnemy() {
-        return allBasicEnemies[(int) (Math.random() * allBasicEnemies.length)];
+        Enemy e = allBasicEnemies[(int) (Math.random() * allBasicEnemies.length)];
+        return new Enemy(e.name, e.health, e.damage, e.weaponDrop);
     }
 
     public static Enemy generateRandomMedEnemy() {
-        return allMedEnemies[(int) (Math.random() * allMedEnemies.length)];
+        Enemy e = allMedEnemies[(int) (Math.random() * allMedEnemies.length)];
+        return new Enemy(e.name, e.health, e.damage, e.weaponDrop);
     }
 
     public static Enemy generateRandomAdvancedEnemy() {
-        return allAdvancedEnemies[(int) (Math.random() * allAdvancedEnemies.length)];
+        Enemy e = allAdvancedEnemies[(int) (Math.random() * allAdvancedEnemies.length)];
+        return new Enemy(e.name, e.health, e.damage, e.weaponDrop);
     }
 
     public static Enemy generateRandomHumanEnemy() {

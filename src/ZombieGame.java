@@ -170,15 +170,12 @@ public class ZombieGame {
             choice = input.nextLine();
         }
         if(choice.equals("fight")) {
-            //System.out.println("You chose to look for a fight.");
             fight();
         }
         else if(choice.equals("look")) {
-            //System.out.println("You chose to look for people.");
             lookForHumans();
         }
         else{
-            //System.out.println("You chose to scavenge for loot.");
             scavenge();
         }
         decrementPlayerStats();
@@ -311,7 +308,7 @@ public class ZombieGame {
     private void scavenge() {
         if(Math.random() > 0.75) {
             System.out.println("You went looking for loot, but ended up getting ambushed!");
-            fight();
+            Enemy e = Enemy.generateRandomEnemy(0.55,0.3,0.15);
             return;
         }
 
@@ -375,7 +372,7 @@ public class ZombieGame {
         battle(enemy);
     }
 
-    private void battle(Enemy enemy) {
+    public void battle(Enemy enemy) { //restore to private after testing
         int enemyMaxHp = enemy.getHealth();
         boolean playerTurn = true;
         double numOfEnemyAttackHits = 0;
@@ -387,6 +384,8 @@ public class ZombieGame {
         }
         gui.setEnemyName(enemy.getName());
         gui.showEnemyData();
+        System.out.println("PLAYER HEALTH: " + player.getHealth());
+        System.out.println("ENEMY HEALTH: " + enemy.getHealth());
         while(player.getHealth() > 0 && enemy.getHealth() > 0) {
             if(playerTurn) {
                 int damage = player.attack();
@@ -529,7 +528,12 @@ public class ZombieGame {
                     player.printInventory();
                     System.out.println("Type the index of the item you're giving away:");
                     choice = input.nextLine();
-                    boolean isNumeric = false;
+                    boolean isNumeric = true;//TODO DEBUG THIS, typing 0 first try didn't work
+                    for(int i = 0; i < choice.length(); i++) {
+                        if(! Character.isDigit(choice.charAt(i))) {
+                            isNumeric = false;
+                        }
+                    }
                     while(!choice.toLowerCase().equals("quit") && (isNumeric == false || Integer.parseInt(choice) < 0 || Integer.parseInt(choice) >= player.getInventory().size())) {
                         isNumeric = true;
                         for(int i = 0; i < choice.length(); i++) {

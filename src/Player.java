@@ -4,7 +4,6 @@ import java.util.Scanner;
 public class Player {
     String name;
     private ArrayList<Item> inventory;
-    private int inventorySlots;
     public final int MAX_HEALTH = 100;
     private int health;
     private int hunger;
@@ -23,27 +22,12 @@ public class Player {
     public Player(String name) {
         this.name = name;
         inventory = new ArrayList<Item>();
-        inventorySlots = 6;
         health = 100;
         hunger = 0;
         thirst = 0;
         infectionLevel = 0;
         equippedWeapon = new Weapon("pair of fists", 1);
         turning = false;
-    }
-
-    //constructor for testing purposes only
-    public Player(String name, int hp, int hunger, int thirst, Weapon weapon) {
-        this.name = name;
-        inventory = new ArrayList<Item>();
-        inventorySlots = 6;
-        health = hp;
-        this.hunger = hunger;
-        this.thirst = thirst;
-        infectionLevel = 0;
-        equippedWeapon = weapon;
-        numOftimesStolen = 0;
-        numOfTimesGiven = 0;
     }
 
     public String getName() {
@@ -271,7 +255,7 @@ public class Player {
                         }
                         System.out.println("Would you like to equip the " + item.getName() + "?");
                         choice = input.nextLine();
-                        if(choice.substring(0,1).toLowerCase().equals("y")) {
+                        if(choice.length() > 0 && choice.substring(0,1).toLowerCase().equals("y")) {
                             if(equippedWeapon != null) {
                                 if(!equippedWeapon.getName().equals("pair of fists")) {
                                     addToInventory(equippedWeapon);
@@ -295,9 +279,9 @@ public class Player {
                         }
                         System.out.println("Would you like to " + action + " the " + item.getName() + "?");
                         choice = input.nextLine();
-                        if(choice.substring(0,1).toLowerCase().equals("y")) {
-                            consumeItem(c);
+                        if(choice.length() > 0 && choice.substring(0,1).toLowerCase().equals("y")) {
                             System.out.println("You " + action + " the " + item.getName());
+                            consumeItem(c);
                             inventory.remove(index);
                         }
                     }
@@ -311,7 +295,7 @@ public class Player {
                     System.out.println("Type the index of the item you want to discard.");
                     choice = input.nextLine();
                     boolean isNumber = false;
-                    while(isNumber == false && Integer.parseInt(choice) < 0 || Integer.parseInt(choice) >= inventory.size()) {
+                    while(choice.length() == 0 ||isNumber == false && Integer.parseInt(choice) < 0 || Integer.parseInt(choice) >= inventory.size()) {
                         isNumber = true;
                         for(int i = 0; i < choice.length(); i++) {
                             if(!Character.isDigit(choice.charAt(i))) {

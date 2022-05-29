@@ -27,12 +27,6 @@ public class Consumable extends Item{
         this.effectiveness = effectiveness;
     }
 
-    public Consumable(String name, String type, int effectiveness, String description) {
-        super(name, description);
-        this.type = type;
-        this.effectiveness = effectiveness;
-    }
-
     public String getType() {
         return type;
     }

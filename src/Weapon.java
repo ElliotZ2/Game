@@ -2,7 +2,7 @@ public class Weapon extends Item{
     private int damage;
     private int timesEnhanced;
     private final int MAX_ENHANCES = 5;
-    private final double sharpenMultiplier = 0.1;
+    private final double ENHANCE_MULTIPLIER = 0.1;
     private static final Weapon[] allLowTierWeapons =
             {new Weapon("toothpick", 1),
             new Weapon("bat", 5),
@@ -29,21 +29,19 @@ public class Weapon extends Item{
         timesEnhanced = 0;
     }
 
-    public Weapon (String name, int damage, String description) {
-        super(name, description);
-        this.damage = damage;
-    }
-
     public static Weapon generateRandomLowTierWeapon() {
-        return allLowTierWeapons[(int) (Math.random() * allLowTierWeapons.length)];
+        Weapon w = allLowTierWeapons[(int) (Math.random() * allLowTierWeapons.length)];
+        return new Weapon(w.getName(), w.damage);
     }
 
     public static Weapon generateRandomMedTierWeapon() {
-        return allMedTierWeapons[(int) (Math.random() * allMedTierWeapons.length)];
+        Weapon w = allMedTierWeapons[(int) (Math.random() * allMedTierWeapons.length)];
+        return new Weapon(w.getName(), w.damage);
     }
 
     public static Weapon generateRandomHighTierWeapon() {
-        return allHighTierWeapons[(int) (Math.random() * allHighTierWeapons.length)];
+        Weapon w = allHighTierWeapons[(int) (Math.random() * allHighTierWeapons.length)];
+        return new Weapon(w.getName(), w.damage);
     }
 
     public int getDamage() {
@@ -69,7 +67,7 @@ public class Weapon extends Item{
             }
             else{
                 int previousDamage = damage;
-                setDamage((int) (damage * (1.0 + sharpenMultiplier)) + 1);
+                setDamage((int) (damage * (1.0 + ENHANCE_MULTIPLIER)) + 1);
                 System.out.println("You enhanced your " + getName() + " and increased its damage from " + previousDamage + " to " + damage + ".");
                 timesEnhanced++;
             }
