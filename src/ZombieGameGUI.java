@@ -24,6 +24,8 @@ public class ZombieGameGUI {
     JPanel enemyHealthPanel;
     JLabel enemyHealthLabel;
     JPanel enemyHealthBar;
+    JPanel timePanel;
+    JLabel timeLabel;
     Font playerNameFont;
     Font playerHealthFont;
     Font playerStatsFont;
@@ -57,6 +59,8 @@ public class ZombieGameGUI {
         enemyHealthPanel= new JPanel();
         enemyHealthLabel= new JLabel();
         enemyHealthBar= new JPanel();
+        timePanel = new JPanel();
+        timeLabel = new JLabel();
         enemyNameFont = new Font("Times New Roman", Font.PLAIN, 40);
         backgroundColor = new Color(15,15,15);
         panelColor = new Color(50,50,85);
@@ -150,6 +154,14 @@ public class ZombieGameGUI {
         enemyNamePanel.setVisible(false);
         enemyHealthPanel.setVisible(false);
         enemyHealthBar.setVisible(false);
+
+        timePanel.setBounds(window.getWidth() - 225, 455, 200, 40);
+        timePanel.setBackground(backgroundColor);
+        timeLabel.setText("Day 1");
+        timeLabel.setForeground(Color.white);
+        timeLabel.setFont(playerStatsFont);
+        timePanel.add(timeLabel);
+        container.add(timePanel);
     }
 
     private void setPlayerName(String name) {
@@ -222,5 +234,9 @@ public class ZombieGameGUI {
         enemyNamePanel.setVisible(false);
         enemyHealthPanel.setVisible(false);
         enemyHealthBar.setVisible(false);
+    }
+
+    public void setTime(String time) {
+        timeLabel.setText(time);
     }
 }

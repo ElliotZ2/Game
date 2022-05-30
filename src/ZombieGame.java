@@ -16,31 +16,22 @@ public class ZombieGame {
     private boolean gameWon;
     private ZombieGameGUI gui;
 
-    public ZombieGame() {
-        player = new Player("");
+    public ZombieGame(String playerName) {
+        player = new Player(playerName);
         timeOfDay = "day";
         daysSurvived = 1;
         gameWon = false;
         gui = new ZombieGameGUI(player);
     }
     public void playGame() {
-        load();
-        System.out.println("-----------------------------------------------------------------------");
-        System.out.println("\nWhat is your name?:");
         String choice = "";
         Scanner input = new Scanner(System.in);
-        String playerName = input.nextLine();
-        playerName = playerName.trim();
-        while(playerName.length() == 0) {
-            System.out.println("Please enter a valid name:");
-            playerName = input.nextLine();
-        }
-        player.setName(playerName);
         gui.run();
         System.out.println("Welcome to the zombie apocalypse, " + player.getName() + ".");
         double winPercentage = 0.0;
         int standing = 0;
         while(player.getHealth() > 0) {
+            gui.setTime(timeOfDay + " " + daysSurvived);
             if(timeOfDay.equals("day")) {
                 System.out.println("DAY: " + daysSurvived);
                 if(daysSurvived == DAY_THRESHOLD_FOR_WIN) {
@@ -372,7 +363,7 @@ public class ZombieGame {
         battle(enemy);
     }
 
-    public void battle(Enemy enemy) { //restore to private after testing
+    private void battle(Enemy enemy) { //restore to private after testing
         int enemyMaxHp = enemy.getHealth();
         boolean playerTurn = true;
         double numOfEnemyAttackHits = 0;
@@ -579,7 +570,7 @@ public class ZombieGame {
         }
     }
 
-    public void load() {
+    public static void load() {
         ArrayList<String> names = new ArrayList<String>();
         ArrayList<Integer> daysSurvived = new ArrayList<Integer>();
         ArrayList<String> statuses = new ArrayList<String>();
@@ -597,7 +588,6 @@ public class ZombieGame {
                     daysSurvived.add(Integer.parseInt(num));
                 }
                 else if(data.contains("Status: ")) {
-                    System.out.println("yo");
                     statuses.add(data.substring(data.indexOf(": ")+2));
                 }
             }
@@ -619,8 +609,6 @@ public class ZombieGame {
             for(int i = 0; i < longestNameLength; i++) {
                 longSpace += " ";
             }
-            System.out.println(longSpace.length());
-            System.out.println(longestNameLength);
             System.out.println("Previous survival runs:");
             System.out.println("  Survivor Name: " + longSpace.substring(0, longestNameLength - "Survivor Name:".length()) + "    Days survived:      Status:");
             for(int i = 0; i < names.size(); i++) {
