@@ -115,6 +115,4 @@ public class Enemy {
         damage = (int) (damage * factor);
 
     }
-
-    //TODO add a generate random enemy method with 3 parameters with the probabilities for a basic, med, and advanced enemy for easier generation of enemies, and also possible scaling of enemies
 }

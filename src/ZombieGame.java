@@ -300,6 +300,7 @@ public class ZombieGame {
         if(Math.random() > 0.75) {
             System.out.println("You went looking for loot, but ended up getting ambushed!");
             Enemy e = Enemy.generateRandomEnemy(0.55,0.3,0.15);
+            battle(e);
             return;
         }
 

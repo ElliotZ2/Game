@@ -4,7 +4,11 @@ public class Consumable extends Item{
     //private int uses; if i want items to have multiple uses
     private static final Consumable[] allFoods =
             {new Consumable("cookie", "food", 10),
-            new Consumable("royal chicken dinner", "food", 100)};
+            new Consumable("royal chicken dinner", "food", 100),
+            new Consumable("granola bar", "food", 25),
+            new Consumable("chips", "food", 35),
+            new Consumable("canned beans", "food", 25),
+            new Consumable("chocolate bar", "food", 20)};
     private static final Consumable[] huntedFoods =
             {new Consumable("chicken", "food", 30),
             new Consumable("pork", "food", 35),
@@ -12,7 +16,9 @@ public class Consumable extends Item{
             new Consumable("duck", "food", 25)};
     private static final Consumable[] allDrinks =
             {new Consumable("bottled water", "drink", 40),
-            new Consumable("orange juice", "drink", 30)};
+            new Consumable("orange juice", "drink", 30),
+            new Consumable("canned soda", "drink", 35),
+            new Consumable("milk", "drink", 30)};
     private static final Consumable[] allHealing =
             {new Consumable("bandages", "healing", 15),
             new Consumable("medkit", "healing", 45)};
