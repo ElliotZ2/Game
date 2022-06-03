@@ -32,6 +32,7 @@ public class ZombieGameGUI {
     Font enemyNameFont;
     Color backgroundColor;
     Color panelColor;
+    JLabel background;
 
     public ZombieGameGUI(Player player) {
         this.player = player;
@@ -64,6 +65,7 @@ public class ZombieGameGUI {
         enemyNameFont = new Font("Times New Roman", Font.PLAIN, 40);
         backgroundColor = new Color(15,15,15);
         panelColor = new Color(50,50,85);
+        background = new JLabel();
     }
 
     public void run() {
@@ -162,6 +164,17 @@ public class ZombieGameGUI {
         timeLabel.setFont(playerStatsFont);
         timePanel.add(timeLabel);
         container.add(timePanel);
+
+        ImageIcon testImageIcon = new ImageIcon("images/night.jpg");
+        Image testImage = testImageIcon.getImage();
+        Image newTestImage = testImage.getScaledInstance(window.getWidth(), window.getHeight(), Image.SCALE_FAST);
+        testImageIcon = new ImageIcon(newTestImage);
+        background.setSize(window.getSize());
+        background.setBounds(window.getBounds());
+        background.setIcon(testImageIcon);
+        background.setVisible(true);
+        container.add(background);
+        //TODO scale this image everytime the window size changes
     }
 
     private void setPlayerName(String name) {
