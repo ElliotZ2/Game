@@ -165,16 +165,15 @@ public class ZombieGameGUI {
         timePanel.add(timeLabel);
         container.add(timePanel);
 
-        ImageIcon testImageIcon = new ImageIcon("images/night.jpg");
-        Image testImage = testImageIcon.getImage();
-        Image newTestImage = testImage.getScaledInstance(window.getWidth(), window.getHeight(), Image.SCALE_FAST);
-        testImageIcon = new ImageIcon(newTestImage);
+        ImageIcon imageIcon = new ImageIcon("images/day.jpg");
+        Image image = imageIcon.getImage();
+        Image testImage = image.getScaledInstance(window.getWidth(), window.getHeight(), Image.SCALE_FAST);
+        imageIcon = new ImageIcon(testImage);
         background.setSize(window.getSize());
         background.setBounds(window.getBounds());
-        background.setIcon(testImageIcon);
+        background.setIcon(imageIcon);
         background.setVisible(true);
         container.add(background);
-        //TODO scale this image everytime the window size changes
     }
 
     private void setPlayerName(String name) {
@@ -251,5 +250,45 @@ public class ZombieGameGUI {
 
     public void setTime(String time) {
         timeLabel.setText(time);
+        String imageFilePath = "images/";
+        if(time.contains("day")) {
+            imageFilePath += "day";
+        }
+        else if(time.contains("afternoon")) {
+            imageFilePath += "afternoon";
+        }
+        else {
+            imageFilePath += "night";
+        }
+        imageFilePath += ".jpg";
+        ImageIcon imageIcon = new ImageIcon(imageFilePath);
+        Image image = imageIcon.getImage();
+        Image newImage = image.getScaledInstance(window.getWidth(), window.getHeight(), Image.SCALE_FAST);
+        imageIcon = new ImageIcon(newImage);
+        background.setIcon(imageIcon);
+    }
+
+    public void showLostScreen() {
+        for(Component c : container.getComponents()) {
+            c.setVisible(false);
+        }
+        ImageIcon imageIcon = new ImageIcon("images/youdied.jpg");
+        Image image = imageIcon.getImage();
+        Image newImage = image.getScaledInstance(window.getWidth(), window.getHeight(), Image.SCALE_FAST);
+        imageIcon = new ImageIcon(newImage);
+        background.setIcon(imageIcon);
+        background.setVisible(true);
+    }
+
+    public void showWinScreen() {
+        for(Component c : container.getComponents()) {
+            c.setVisible(false);
+        }
+        ImageIcon imageIcon = new ImageIcon("images/youwin.jpg");
+        Image image = imageIcon.getImage();
+        Image newImage = image.getScaledInstance(window.getWidth(), window.getHeight(), Image.SCALE_FAST);
+        imageIcon = new ImageIcon(newImage);
+        background.setIcon(imageIcon);
+        background.setVisible(true);
     }
 }

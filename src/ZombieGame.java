@@ -98,12 +98,26 @@ public class ZombieGame {
                 action = "joined the group of bandits";
                 System.out.println("BANDIT ENDING: You live out the rest of your life surviving at all costs with your fellow bandits.");
             }
+            gui.showWinScreen();
             System.out.println(player.getName() + " survived for " + daysSurvived + " on their own before they " + action + ".");
             System.out.println("YOU WIN!");
+            try{
+                Thread.sleep(4000);
+            }
+            catch(Exception e) {
+                System.out.println(e);
+            }
         }
         else{
             System.out.println(player.getName() + " was able to survive for " + daysSurvived + " days.");
             System.out.println("YOU LOSE!");
+            gui.showLostScreen();
+            try{
+                Thread.sleep(4000);
+            }
+            catch(Exception e) {
+                System.out.println(e);
+            }
         }
         save();
         System.exit(0);
@@ -376,13 +390,11 @@ public class ZombieGame {
         }
         gui.setEnemyName(enemy.getName());
         gui.showEnemyData();
-        System.out.println("PLAYER HEALTH: " + player.getHealth());
-        System.out.println("ENEMY HEALTH: " + enemy.getHealth());
         while(player.getHealth() > 0 && enemy.getHealth() > 0) {
             if(playerTurn) {
                 int damage = player.attack();
                 enemy.takeDamage(damage);
-                System.out.println(player.getName() + " attacked the " + enemy.getName() + " for " + damage + " damage " + " with their " + player.getEquippedWeapon().getName() + ".");
+                System.out.println(player.getName() + " attacked the " + enemy.getName() + " for " + damage + " damage with their " + player.getEquippedWeapon().getName() + ".");
                 System.out.println("The " + enemy.getName() + " now has " + enemy.getHealth() + " health.");
                 System.out.println();
                 gui.setEnemyHealth(enemy.getHealth(), enemyMaxHp);
