@@ -2,7 +2,7 @@ public class Enemy {
     private String name;
     private int health;
     private int damage;
-    private final double CHANCE_TO_HIT = 0.4;
+    private final double CHANCE_TO_HIT = 0.55;
     private String weaponDrop; //none, low, med, or high
     private static final Enemy[] allBasicEnemies =
             {

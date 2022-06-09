@@ -99,7 +99,7 @@ public class ZombieGame {
                 System.out.println("BANDIT ENDING: You live out the rest of your life surviving at all costs with your fellow bandits.");
             }
             gui.showWinScreen();
-            System.out.println(player.getName() + " survived for " + daysSurvived + " on their own before they " + action + ".");
+            System.out.println(player.getName() + " survived for " + daysSurvived + " days on their own before they " + action + ".");
             System.out.println("YOU WIN!");
             try{
                 Thread.sleep(4000);
